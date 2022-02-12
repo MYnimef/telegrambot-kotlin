@@ -47,10 +47,8 @@ public final class InputHandlerReg<E extends Enum<E>> extends InputHandler {
     private void registrationHandler() {
         reply.setText(stage.getReply(message, chatIdLong));
 
-        if (stage.doesHaveFiles()) {
-            for (VMFile file : stage.getFiles()) {
-                addDoc(file, chatIdStr);
-            }
+        for (VMFile file : stage.getFiles()) {
+            addDoc(file, chatIdStr);
         }
     }
 }

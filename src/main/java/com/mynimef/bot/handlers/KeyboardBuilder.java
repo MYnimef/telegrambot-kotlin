@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 final class KeyboardBuilder {
-    static InlineKeyboardMarkup setReply(ButtonLine[] buttons) {
+    static InlineKeyboardMarkup setReply(List<ButtonLine> buttons) {
         InlineKeyboardMarkup replyMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> keyboardButtons = new ArrayList<>();
 

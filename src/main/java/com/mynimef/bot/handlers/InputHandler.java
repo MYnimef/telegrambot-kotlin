@@ -63,7 +63,7 @@ public class InputHandler extends Handler {
                         .action(chatIdLong, username, firstName, lastName);
             }
 
-            if (command.doesHaveFiles() && haveFiles) {
+            if (haveFiles) {
                 for (VMFile file : command.getFiles()) {
                     addDoc(file, chatIdStr);
                 }

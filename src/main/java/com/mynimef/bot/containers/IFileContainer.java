@@ -1,6 +1,8 @@
 package com.mynimef.bot.containers;
 
+import java.util.List;
+
 public interface IFileContainer {
-    boolean doesHaveFiles();
-    VMFile[] getFiles();
+    List<VMFile> getFiles();
+    void setFiles(List<VMFile> files);
 }

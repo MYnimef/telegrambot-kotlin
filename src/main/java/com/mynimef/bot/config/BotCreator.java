@@ -36,6 +36,7 @@ public class BotCreator {
             E commandsState
     ) {
         this.stages = stages;
+        this.stages.initialize();
         this.state = state;
         this.commandsState = new CommandsState<>(commandsState);
         return this;

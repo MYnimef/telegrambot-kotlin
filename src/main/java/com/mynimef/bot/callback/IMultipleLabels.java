@@ -1,5 +1,7 @@
 package com.mynimef.bot.callback;
 
+import java.util.Map;
+
 public interface IMultipleLabels {
-    String[] callback();
+    void callback(Map<String, String> map);
 }

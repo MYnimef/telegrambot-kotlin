@@ -27,16 +27,13 @@ public final class CallbackHandler extends Handler {
     public IHandler start() {
         if (callback instanceof ICallbackEdit) {
             EditMessageText message = new EditMessageText();
+
             message.setChatId(chatIdStr);
             message.setMessageId(messageId);
             message.setText(((ICallbackEdit) callback).callback(chatIdLong));
-            reply = message;
-        } else if (callback instanceof ICallbackEditKeep) {
-            EditMessageText message = new EditMessageText();
-            message.setChatId(chatIdStr);
-            message.setMessageId(messageId);
-            message.setText(((ICallbackEditKeep) callback).callback().getCallback().callback(chatIdLong));
-            message.setReplyMarkup(KeyboardBuilder.setReply(((ICallbackEditKeep) callback).callback().getButtonLines()));
+            if (callback.doesHaveButtons()) {
+                message.setReplyMarkup(KeyboardBuilder.setReply(callback.getButtons()));
+            }
 
             reply = message;
         } else if (callback instanceof ICallbackSendMessage) {
@@ -48,11 +45,13 @@ public final class CallbackHandler extends Handler {
             message.setText(mes.getText());
             reply = message;
 
-            if (mes.doesHaveFiles()) {
-                for (VMFile file: mes.getFiles()) {
-                    addDoc(file, chatIdStr);
-                }
+            for (VMFile file: mes.getFiles()) {
+                addDoc(file, chatIdStr);
             }
+        }
+
+        for (VMFile file : callback.getFiles()) {
+            addDoc(file, chatIdStr);
         }
 
         return this;

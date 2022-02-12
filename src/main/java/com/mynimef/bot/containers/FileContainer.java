@@ -1,27 +1,27 @@
 package com.mynimef.bot.containers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FileContainer<T> implements IFileContainer, IFileAdd<T> {
-    private VMFile[] files;
+    private List<VMFile> files;
+
+    public FileContainer() {
+        this.files = new ArrayList<>();
+    }
 
     @Override
-    public boolean doesHaveFiles() { return files != null; }
+    public List<VMFile> getFiles() { return files; }
+
     @Override
-    public VMFile[] getFiles() { return files; }
+    public void setFiles(List<VMFile> files) {
+        this.files = files;
+    }
 
     @SuppressWarnings("unchecked")
     @Override
     public T addFile(String path, String description) {
-        VMFile file = new VMFile(path, description);
-
-        if (this.files == null) {
-            files = new VMFile[]{ file };
-        } else {
-            int length = this.files.length;
-            VMFile[] files = new VMFile[length + 1];
-            System.arraycopy(this.files, 0, files, 0, length);
-            this.files = files;
-            this.files[length] = file;
-        }
+        files.add(new VMFile(path, description));
 
         return (T) this;
     }

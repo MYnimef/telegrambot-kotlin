@@ -1,5 +1,7 @@
 package com.mynimef.bot.containers;
 
+import java.util.List;
+
 public class Container<T> implements IFileContainer, IFileAdd<T>, IButtonsContainer, IButtonAdd<T> {
     private final FileContainer<T> fileContainer;
     private final ButtonsContainer<T> buttonsContainer;
@@ -25,8 +27,13 @@ public class Container<T> implements IFileContainer, IFileAdd<T>, IButtonsContai
     }
 
     @Override
-    public ButtonLine[] getButtons() {
+    public List<ButtonLine> getButtons() {
         return buttonsContainer.getButtons();
+    }
+
+    @Override
+    public void setButtons(List<ButtonLine> buttonLines) {
+        buttonsContainer.setButtons(buttonLines);
     }
 
     @Override
@@ -35,12 +42,12 @@ public class Container<T> implements IFileContainer, IFileAdd<T>, IButtonsContai
     }
 
     @Override
-    public boolean doesHaveFiles() {
-        return fileContainer.doesHaveFiles();
+    public List<VMFile> getFiles() {
+        return fileContainer.getFiles();
     }
 
     @Override
-    public VMFile[] getFiles() {
-        return fileContainer.getFiles();
+    public void setFiles(List<VMFile> files) {
+        fileContainer.setFiles(files);
     }
 }

@@ -1,11 +1,15 @@
 package com.mynimef.bot.containers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 class ButtonsContainer<T> implements IButtonsContainer, IButtonAdd<T> {
     private boolean nextLine;
-    private ButtonLine[] buttonLines;
+    private List<ButtonLine> buttonLines;
 
     public ButtonsContainer() {
         this.nextLine = true;
+        this.buttonLines = new ArrayList<>();
     }
 
     @Override
@@ -14,8 +18,13 @@ class ButtonsContainer<T> implements IButtonsContainer, IButtonAdd<T> {
     }
 
     @Override
-    public ButtonLine[] getButtons() {
+    public List<ButtonLine> getButtons() {
         return buttonLines;
+    }
+
+    @Override
+    public void setButtons(List<ButtonLine> buttonLines) {
+        this.buttonLines = buttonLines;
     }
 
     @SuppressWarnings("unchecked")
@@ -24,15 +33,10 @@ class ButtonsContainer<T> implements IButtonsContainer, IButtonAdd<T> {
         Button button = new Button(label, callbackId);
 
         if (nextLine) {
-            addLineToLines();
             nextLine = false;
-        }
-
-        int num = this.buttonLines.length - 1;
-        if (this.buttonLines[num] == null) {
-            this.buttonLines[num] = new ButtonLine(button);
+            buttonLines.add(new ButtonLine(button));
         } else {
-            this.buttonLines[this.buttonLines.length - 1].addButton(button);
+            buttonLines.get(buttonLines.size() - 1).addButton(button);
         }
 
         return (T) this;
@@ -43,16 +47,5 @@ class ButtonsContainer<T> implements IButtonsContainer, IButtonAdd<T> {
     public T addLine() {
         nextLine = true;
         return (T) this;
-    }
-
-    private void addLineToLines() {
-        if (buttonLines != null) {
-            int length = this.buttonLines.length;
-            ButtonLine[] buttonLines = new ButtonLine[length + 1];
-            System.arraycopy(this.buttonLines, 0, buttonLines, 0, length);
-            this.buttonLines = buttonLines;
-        } else {
-            this.buttonLines = new ButtonLine[1];
-        }
     }
 }

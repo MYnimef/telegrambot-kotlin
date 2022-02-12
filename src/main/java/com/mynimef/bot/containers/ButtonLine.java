@@ -1,20 +1,19 @@
 package com.mynimef.bot.containers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ButtonLine {
-    private Button[] line;
+    private final List<Button> line;
 
     public ButtonLine(Button button) {
-        this.line = new Button[]{ button };
+        this.line = new ArrayList<>();
+        this.line.add(button);
     }
 
-    public Button[] getLine() { return line; }
+    public List<Button> getLine() { return line; }
 
     public void addButton(Button button) {
-        int length = this.line.length;
-        Button[] line = new Button[length + 1];
-        System.arraycopy(this.line, 0, line, 0, length);
-        this.line = line;
-
-        this.line[length] = button;
+        this.line.add(button);
     }
 }
