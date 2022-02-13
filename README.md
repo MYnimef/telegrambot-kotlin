@@ -2,6 +2,8 @@
 
 # API для создания telegram бота
 
+This API uses [Rubenlagus' library for Java](https://github.com/rubenlagus/TelegramBots).
+
 ## Добавление в свой проект
 
 Для добавления Данного API в свой проект необходимо добавить зависимость.
@@ -89,3 +91,6 @@ public class Main {
 
  to be continued...
   
+ ## Credits
+
+* [Rubenlagus](https://github.com/rubenlagus/) for Telegram Bot JAVA API
