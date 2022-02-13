@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'maven-publish'
 }
 
 repositories {
@@ -8,7 +9,7 @@ repositories {
 }
 
 group 'com.mynimef'
-version '0.0.1'
+version '0.0.2'
 
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'

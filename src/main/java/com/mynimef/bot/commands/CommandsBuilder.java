@@ -2,9 +2,7 @@ package com.mynimef.bot.commands;
 
 import com.mynimef.bot.callback.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public abstract class CommandsBuilder {
