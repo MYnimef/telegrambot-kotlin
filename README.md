@@ -1,4 +1,4 @@
-[![](https://jitpack.io/v/MYnimef/telegrambot.svg)](https://jitpack.io/#MYnimef/telegrambot)
+[![](https://jitpack.io/v/MYnimef/telegrambot-java.svg)](https://jitpack.io/#MYnimef/telegrambot-java)
 
 # API для создания telegram бота
 
@@ -74,7 +74,7 @@ public class MyCommandsBuilder extends CommandsBuilder {
 }
 ```
 
- Давайте попробуем добавить команду, которая будет выполнять какое-то действие когда пользователь ее введет:
+ Давайте попробуем добавить команду, которая будет выполнять какое-то действие, когда пользователь ее введет:
 
 ```java
 public class MyCommandsBuilder extends CommandsBuilder { 
