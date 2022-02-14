@@ -75,9 +75,9 @@ public class Main {
 
 ## Кастомизация бота
 
-* [Урок 1. Логирование](tut1_logs.md)
-* [Урок 2. Добавление команд](tut2_commands.md)
-* [Урок 3. Добавление стадий/регистрации](tut3_registration.md)
+* [Урок 1. Логирование](tutorials/tut1_logs.md)
+* [Урок 2. Добавление команд](tutorials/tut2_commands.md)
+* [Урок 3. Добавление стадий/регистрации](tutorials/tut3_registration.md)
 
  
   
