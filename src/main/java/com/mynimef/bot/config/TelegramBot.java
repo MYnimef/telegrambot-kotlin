@@ -17,6 +17,7 @@ import java.util.Map;
 
 abstract class TelegramBot extends TelegramLongPollingBot implements IBot, IMessageReceiver {
     protected final Map<String, ICommand> commands;
+    protected final ICommand noCommandRecognized;
     private final Map<Long, ICallback> callbacks;
 
     private final String token;
@@ -24,11 +25,13 @@ abstract class TelegramBot extends TelegramLongPollingBot implements IBot, IMess
 
     TelegramBot(
             Map<String, ICommand> commands,
+            ICommand noCommandRecognized,
             Map<Long, ICallback> callbacks,
             String token,
             String username
     ) {
         this.commands = commands;
+        this.noCommandRecognized = noCommandRecognized;
         this.callbacks = callbacks;
         this.token = token;
         this.username = username;
@@ -78,10 +81,12 @@ abstract class TelegramBot extends TelegramLongPollingBot implements IBot, IMess
     }
 
     private void sendMessage(BotApiMethod<?> reply) {
-        try {
-            execute(reply);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
+        if (reply != null) {
+            try {
+                execute(reply);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
         }
     }
 

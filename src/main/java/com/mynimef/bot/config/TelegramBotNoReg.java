@@ -10,12 +10,14 @@ import java.util.Map;
 class TelegramBotNoReg extends TelegramBot {
     TelegramBotNoReg(
             Map<String, ICommand> commands,
+            ICommand noCommandRecognized,
             Map<Long, ICallback> callbacks,
             String token,
             String username
     ) {
         super(
                 commands,
+                noCommandRecognized,
                 callbacks,
                 token,
                 username
@@ -38,7 +40,8 @@ class TelegramBotNoReg extends TelegramBot {
                                 username,
                                 firstName,
                                 lastName,
-                                commands
+                                commands,
+                                noCommandRecognized
                         )
                                 .start()
                 )

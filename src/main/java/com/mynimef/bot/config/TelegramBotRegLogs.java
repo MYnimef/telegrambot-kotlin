@@ -12,6 +12,7 @@ final class TelegramBotRegLogs<E extends Enum<E>> extends TelegramBotReg<E> {
 
     TelegramBotRegLogs(
             Map<String, ICommand> commands,
+            ICommand noCommandRecognized,
             Map<Long, ICallback> callbacks,
             Map<E, IStage> stages,
             String token,
@@ -22,6 +23,7 @@ final class TelegramBotRegLogs<E extends Enum<E>> extends TelegramBotReg<E> {
     ) {
         super(
                 commands,
+                noCommandRecognized,
                 callbacks,
                 stages,
                 token,

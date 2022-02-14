@@ -20,6 +20,7 @@ class BotInitializer<E extends Enum<E>> {
     ) {
         this.bot = new TelegramBotReg<>(
                 commands.getCommands(),
+                commands.getNoCommandRecognized(),
                 commands.getCallbacks(),
                 stages.getStages(),
                 token,
@@ -40,6 +41,7 @@ class BotInitializer<E extends Enum<E>> {
     ) {
         this.bot = new TelegramBotRegLogs<>(
                 commands.getCommands(),
+                commands.getNoCommandRecognized(),
                 commands.getCallbacks(),
                 stages.getStages(),
                 token,
@@ -57,6 +59,7 @@ class BotInitializer<E extends Enum<E>> {
     ) {
         this.bot = new TelegramBotNoReg(
                 commands.getCommands(),
+                commands.getNoCommandRecognized(),
                 commands.getCallbacks(),
                 token,
                 username
@@ -71,6 +74,7 @@ class BotInitializer<E extends Enum<E>> {
     ) {
         this.bot = new TelegramBotNoRegLogs(
                 commands.getCommands(),
+                commands.getNoCommandRecognized(),
                 commands.getCallbacks(),
                 token,
                 username,

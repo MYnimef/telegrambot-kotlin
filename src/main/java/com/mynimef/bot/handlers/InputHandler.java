@@ -15,8 +15,9 @@ public class InputHandler extends Handler {
     protected final String lastName;
 
     protected final ICommand command;
+    private final ICommand noCommandRecognized;
 
-    protected final SendMessage reply;
+    protected SendMessage reply;
 
     @Override
     public SendMessage getReply() { return reply; }
@@ -28,18 +29,16 @@ public class InputHandler extends Handler {
             String username,
             String firstName,
             String lastName,
-            Map<String, ICommand> commands
+            Map<String, ICommand> commands,
+            ICommand noCommandRecognized
     ) {
         super(chatId, chatId.toString());
         this.message = message;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
-
+        this.noCommandRecognized = noCommandRecognized;
         this.command = commands.get(message);
-
-        this.reply = new SendMessage();
-        this.reply.setChatId(chatIdStr);
     }
 
     public IHandler start() {
@@ -49,6 +48,9 @@ public class InputHandler extends Handler {
 
     protected void commandsHandler() {
         if (command != null) {
+            reply = new SendMessage();
+            reply.setChatId(chatIdStr);
+
             reply.setText(command.getReply());
             boolean haveFiles = true;
 
@@ -72,8 +74,13 @@ public class InputHandler extends Handler {
             if (command.doesHaveButtons()) {
                 reply.setReplyMarkup(KeyboardBuilder.setReply(command.getButtons()));
             }
-        } else {
-            reply.setText("Ошибка ввода. Наберите /help для просмотра списка комманд");
+        } else if (noCommandRecognized != null) {
+            String replyText = ((ICommandReply) noCommandRecognized).action(chatIdLong, username, firstName, lastName, message);
+            if (replyText!= null && !replyText.equals("")) {
+                reply = new SendMessage();
+                reply.setChatId(chatIdStr);
+                reply.setText(replyText);
+            }
         }
     }
 }

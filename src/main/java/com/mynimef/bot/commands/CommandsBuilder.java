@@ -14,7 +14,7 @@ public abstract class CommandsBuilder {
         this.callbacks = new HashMap<>();
     }
 
-    public abstract void initialize();
+    protected abstract void initialize();
 
     protected ICustomizationCommand add(String command, String reply) {
         Command com = new Command(reply);
@@ -72,22 +72,31 @@ public abstract class CommandsBuilder {
         add(command, reply + "\n" + resultReply);
     }
 
-    public ICustomizationCallback action(ICallbackEdit callback) {
+    protected ICustomizationCallback action(ICallbackEdit callback) {
         ICallback cb = new CallbackEdit(callback);
         return new CustomizationCallback(cb);
     }
 
-    public ICustomizationCallback action(ICallbackEditCustom callback) {
+    protected ICustomizationCallback action(ICallbackEditCustom callback) {
         ICallback cb = new CallbackEditCustom(callback);
         return new CustomizationCallback(cb);
     }
 
-    public ICustomizationCallback action(ICallbackSendMessage callback) {
+    protected ICustomizationCallback action(ICallbackSendMessage callback) {
         ICallback cb = new CallbackSendMessage(callback);
         return new CustomizationCallback(cb);
     }
 
-    public Map<String, ICommand> getCommands() { return commands; }
+    public Map<String, ICommand> getCommands() {
+        initialize();
+        return commands;
+    }
 
     public Map<Long, ICallback> getCallbacks() { return callbacks; }
+
+    protected abstract String nonCommandUpdate(String message, Long chatId, String username, String firstName, String lastName);
+
+    public ICommand getNoCommandRecognized() {
+        return new CommandReply("", (chatId, username, firstName, lastName, replyConst) -> nonCommandUpdate(replyConst, chatId, username, firstName, lastName));
+    }
 }

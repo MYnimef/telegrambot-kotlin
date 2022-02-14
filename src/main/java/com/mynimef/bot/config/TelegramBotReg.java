@@ -15,6 +15,7 @@ class TelegramBotReg<E extends Enum<E>> extends TelegramBot {
 
     TelegramBotReg(
             Map<String, ICommand> commands,
+            ICommand noCommandRecognized,
             Map<Long, ICallback> callbacks,
             Map<E, IStage> stages,
             String token,
@@ -24,6 +25,7 @@ class TelegramBotReg<E extends Enum<E>> extends TelegramBot {
     ) {
         super(
                 commands,
+                noCommandRecognized,
                 callbacks,
                 token,
                 username
@@ -51,6 +53,7 @@ class TelegramBotReg<E extends Enum<E>> extends TelegramBot {
                                 firstName,
                                 lastName,
                                 commands,
+                                noCommandRecognized,
                                 stages,
                                 state.getState(id),
                                 commandsState

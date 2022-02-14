@@ -11,6 +11,7 @@ final class TelegramBotNoRegLogs extends TelegramBotNoReg {
 
     TelegramBotNoRegLogs(
             Map<String, ICommand> commands,
+            ICommand noCommandRecognized,
             Map<Long, ICallback> callbacks,
             String token,
             String username,
@@ -18,6 +19,7 @@ final class TelegramBotNoRegLogs extends TelegramBotNoReg {
     ) {
         super(
                 commands,
+                noCommandRecognized,
                 callbacks,
                 token,
                 username

@@ -17,6 +17,7 @@ public final class InputHandlerReg<E extends Enum<E>> extends InputHandler {
             String firstName,
             String lastName,
             Map<String, ICommand> commands,
+            ICommand noCommandRecognized,
             Map<E, IStage> stages,
             E actualState,
             E commandsState
@@ -27,7 +28,8 @@ public final class InputHandlerReg<E extends Enum<E>> extends InputHandler {
                 username,
                 firstName,
                 lastName,
-                commands
+                commands,
+                noCommandRecognized
         );
 
         this.stage = stages.get(actualState);

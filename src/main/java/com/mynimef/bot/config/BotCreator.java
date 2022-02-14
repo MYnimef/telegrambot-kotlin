@@ -26,7 +26,6 @@ public class BotCreator {
 
     public BotCreator addCommands(CommandsBuilder commands) {
         this.commands = commands;
-        this.commands.initialize();
         return this;
     }
 
@@ -52,10 +51,7 @@ public class BotCreator {
         if (stages != null && state != null && commandsState != null) {
             if (logs != null) {
                 return new BotInitializer(
-                        commands != null ? commands : new CommandsBuilder() {
-                            @Override
-                            public void initialize() { }
-                        },
+                        commands != null ? commands : getEmptyCommands(),
                         stages,
                         token,
                         username,
@@ -66,10 +62,7 @@ public class BotCreator {
                         .Init();
             } else {
                 return new BotInitializer(
-                        commands != null ? commands : new CommandsBuilder() {
-                            @Override
-                            public void initialize() { }
-                        },
+                        commands != null ? commands : getEmptyCommands(),
                         stages,
                         token,
                         username,
@@ -81,10 +74,7 @@ public class BotCreator {
         } else {
             if (logs != null) {
                 return new BotInitializer(
-                        commands != null ? commands : new CommandsBuilder() {
-                            @Override
-                            public void initialize() { }
-                        },
+                        commands != null ? commands : getEmptyCommands(),
                         token,
                         username,
                         logs
@@ -92,15 +82,21 @@ public class BotCreator {
                         .Init();
             } else {
                 return new BotInitializer(
-                        commands != null ? commands : new CommandsBuilder() {
-                            @Override
-                            public void initialize() { }
-                        },
+                        commands != null ? commands : getEmptyCommands(),
                         token,
                         username
                 )
                         .Init();
             }
         }
+    }
+
+    private CommandsBuilder getEmptyCommands() {
+        return new CommandsBuilder() {
+            @Override
+            public void initialize() { }
+            @Override
+            protected String nonCommandUpdate(String message, Long chatId, String username, String firstName, String lastName) { return null; }
+        };
     }
 }

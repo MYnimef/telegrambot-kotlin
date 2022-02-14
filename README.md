@@ -23,7 +23,7 @@ This API uses [Rubenlagus' library for Java](https://github.com/rubenlagus/Teleg
 <dependency>
     <groupId>com.github.MYnimef</groupId>
     <artifactId>telegrambot-java</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
 </dependency>
 ```
 
@@ -45,7 +45,7 @@ dependencies {
     
     ...
     
-    implementation 'com.github.MYnimef:telegrambot-java:0.0.1'
+    implementation 'com.github.MYnimef:telegrambot-java:0.0.2'
 }
 ```
 
