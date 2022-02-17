@@ -1,16 +1,18 @@
 [![](https://jitpack.io/v/MYnimef/telegrambot-java.svg)](https://jitpack.io/#MYnimef/telegrambot-java) [![Supported version](https://img.shields.io/badge/Telegram%20Bot%20API-5.7-blue)](https://core.telegram.org/bots/api-changelog#january-31-2022)
 
-# API для создания telegram бота
+### [Версия на русском языке](tutorials/README_ru.md)
+
+# API for creating telegram bot
 
 This API uses [Rubenlagus' library for Java](https://github.com/rubenlagus/TelegramBots).
 
-## Добавление в свой проект
+## Adding to your project
 
-Для добавления Данного API в свой проект необходимо добавить зависимость.
+To add this API to your project you need to add dependency.
 
 #### MAVEN
 
-Если в вашем проекте используется maven, добавьте в pom.xml следующее:
+If you use maven, add to pom.xml following text:
 
 ```xml
 <repositories>
@@ -29,7 +31,7 @@ This API uses [Rubenlagus' library for Java](https://github.com/rubenlagus/Teleg
 
 #### GRADLE
 
-Если в вашем проекте используется gradle, добавьте в build.gradle следующее:
+If you use gradle, add to build.gradle following text:
 
 ```kotlin
 repositories { 
@@ -49,17 +51,16 @@ dependencies {
 }
 ```
 
-## Возможные проблемы
+## Possible problems
 
-Если ваш бот будет принимать/отправлять сообщения на русском языке, могут возникнуть проблемы с кодировкой. Для решения 
-этих проблем просто добавьте в build.gradle следующее:
+If your bot receives/sends messages with text that isn't supported in ANSII, you should add to build.gradle the following lines:
 
 ```kotlin
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
 ```
 
-## Инициализация бота
+## Bot initialization
 
 ```java
 public class Main {
@@ -73,11 +74,11 @@ public class Main {
 }
 ```
 
-## Кастомизация бота
+## Bot customization
 
-* [Урок 1. Логирование](tutorials/tut1_logs.md)
-* [Урок 2. Добавление команд](tutorials/tut2_commands.md)
-* [Урок 3. Добавление стадий/регистрации](tutorials/tut3_registration.md)
+* [Lesson 1. Adding Logs](tutorials/tut1_logs.md)
+* [Lesson 2. Adding Commands](tutorials/tut2_commands.md)
+* [Lesson 3. Adding Stages/Registration](tutorials/tut3_registration.md)
 
  
   

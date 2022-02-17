@@ -1,6 +1,8 @@
-# Добавление команд
+# Adding commands to your bot
 
-Для добавления своих команд нужно проделать несколько действий. Для начала создадим класс, который будет наследоваться от CommandsBuilder:
+### [Версия на русском языке](tut2_commands_ru.md)
+
+In order to add your own commands you need to do a few things. First - create a class that extends CommandsBuilder:
 
 ```java
 public class MyCommandsBuilder extends CommandsBuilder { 
@@ -16,9 +18,9 @@ public class MyCommandsBuilder extends CommandsBuilder {
 }
 ```
 
-Как мы видим, в нем надо обязательно имплементировать (реализовать) два метода. initialize - метод, в котором мы будем добавлять все свои команды. 
-nonCommandsUpdate - то, что вернется пользователю, в случае, если ни одна из команд не будет распознана. Давайте для примера создадим 
-эхо-бота:
+As you can see - you need to override two methods. initialize - method, where we will add all of our commands. 
+nonCommandsUpdate - method that returns String - this is what user will receive if no command recognized. For example let's create
+echo bot:
 
 ```java
 public class MyCommandsBuilder extends CommandsBuilder { 
@@ -34,7 +36,7 @@ public class MyCommandsBuilder extends CommandsBuilder {
 }
 ```
 
-Этот бот будет повторять все сообщения, которые вы будете ему присылать. Теперь попробуем добавить свои команды в метод initialize:
+This bot will repeat every message you will send to it. Now, let's add commands in initialize:
 
 ```java
 public class MyCommandsBuilder extends CommandsBuilder {
@@ -42,7 +44,7 @@ public class MyCommandsBuilder extends CommandsBuilder {
     protected void initialize() {
         add(
                 "/start", 
-                "Привет!"
+                "Hi!"
         );
     }
     
@@ -53,7 +55,7 @@ public class MyCommandsBuilder extends CommandsBuilder {
 }
 ```
 
-Давайте попробуем добавить команду, которая будет выполнять какое-то действие, когда пользователь ее введет. Делаем это все еще в методе 
+Let's add the command that will perform an action when user will use it. The following code is still in the method
 initialize:
 
 ```java
@@ -66,18 +68,8 @@ add(
 );
 ```
 
-Эта команда будет выводить в консоль "Hello, world!" каждый раз, когда любой пользователь ее введет. Обратите внимание на
-параметры лямбда-выражения. Давайте разберем их подробнее:
-
-- chatId - уникальное Id каждого пользователя. Если задумаетесь над ведением базы данных пользователей, то это значение
-  будет отличным первичным ключом. тип значения - Long;
-- username - значение типа String, не подходит для роли первичного ключа, так как его можно изменить,
-  однако удобен для идентификации;
-- firstName - имя пользователя, которое задается в телеграмме;
-- secondName - фамилия пользователя, которая задается в телеграмме (если ее не задать, возвращает имя пользователя).
-
-Все эти значения вы сможете получить, если захотите добавить логику в обработчик команды.
-Теперь, давайте разберем пример добавления команды, которая будет изменять текст своего ответа:
+This command will print "Hello, world!" in console every time when it will be used. 
+Now, lets add the command with custom reply text:
 
 ```java
 add(
@@ -89,12 +81,12 @@ add(
 );
 ```
 
-Данная команда возвращает пользователю приветствие с его именем.
+This command will return Hello, Name!
 
-## Добавление кнопок
+## Adding buttons
 
-Теперь, допустим, мы захотели добавить команду с кнопками, прикрепленными к ней. Хорошая новость - у нас есть такая возможность!
-Попробуем создать команду с двумя кнопками, при нажатии на которые текст исходного сообщения будет меняться:
+Imagine you want your command to have a buttons. Good news - you have the ability to add them!
+Let's create a command with two buttons that will change the text when pressed:
 
 ```java
 add(
@@ -105,9 +97,9 @@ add(
         .addButton("button2", "text from button2");
 ```
 
-Попробуйте проделать аналогичные действия и проверьте результат. Спойлер: будут созданы две кнопки,
-при нажатии на которые текст изменится, а кнопки внезапно пропадут....
-Но что если мы хотели сделать так, чтобы кнопки не исчезали?... Решение есть!
+Try to use this code and check the result. Spoiler: two buttons will be created,
+pressing on them will change the text and the buttons will disappear....
+But what if we don' t want them to disappear?... There is a solution!
 
 ```java
 add(
@@ -118,8 +110,8 @@ add(
         .addButtonKeep("button2", "text from button2");
 ```
 
-Теперь при нажатии на обе кнопки они не будут пропадать! А что если нам этого мало? Если при нажатии на кнопку должно происходить
-какое-то действие... как быть в этом случае???? Давайте попробуем разобраться:
+Now pressing on both of them won't make them disappear! But what if we want more? If we want to perform an action
+when button is pressed... what should we do???? Let's figure it out:
 
 ```java
 add(
@@ -151,12 +143,12 @@ add(
         );
 ```
 
-Фух, вроде вышло. Самая демократическая команда создана, настало время разбирать, как это работает. Во-первых - да,
-данная библиотека содержит в себе эмодзи (пока что только 6 штук - давайте челлендж - 1000 звездочек на этом репозитории
-и я добавляю всю библиотеку эмодзи). Второе - да, нужно вызывать метод action для добавления обработчика нажатия кнопки.
-Позже вы поймете зачем.
+Looks like we did it. The most democratic command is created - now let's analyze what inside. First of all - yes,
+this library does support the Emoji (only 6 of them lol, lets make a challenge - 1k stars on this repo, and I'll add all of them). 
+Second - we need add action method call as a parameter while creating the button.
+Soon you'll understand why.
 
-К слову, можно сделать не только кнопку, которая изменяет исходное сообщение, но и которая просто отправит новое сообщение.
+Btw, you can make not only the button, that will edit message, but that can also send another one:
 
 ```java
 add(
@@ -171,44 +163,43 @@ add(
         );
 ```
 
-## Добавление файлов
+## Adding files
 
-Допустим, вместе с сообщением мы хотим отправлять файл. Можно ли это сделать? Ответ - можно. Причем это настолько же просто, 
-как и добавление кнопок.
+For example, we want to send file with a message. Can we do that? Ofc we can. It's so simple as 
+adding buttons.
 
 ```java
 add(
         "/file", 
         "there are your file"
 )
-        .addFile("путь к файлу", "краткое описание");
+        .addFile("path", "description");
 ```
 
-Допустим, файл, который мы хотим отправить создается в процессе обработки программы и допустим вы не до конца уверены, создастся ли он. 
-В этом случае проделаем следующее:
+Imagine if a file that we want to send is creating every time command is used. To avoid any mistakes, we can do the following:
 
 ```java
 add(
-        "/membership",
-        "Генерация документа...",
+        "/genfile",
+        "Generation of the doc...",
         (chatId, username, firstName, lastName) -> {
-            логика создания файла;
-            return true; //если все хорошо
+            lofic of creating the file;
+            return true; //if everything is ok
         }
 )
-        .addFile("путь к файлу", "краткое описание");
+        .addFile("path", "description");
 ```
 
-А если нам нужна отправка файлов после нажатия на кнопку? 
-Ниже приведен код создания команды, которая редактирует сообщение и отправляет вместе с ним файл.
+What if we want to send files after pressing the button? 
+The answer is here:
 
 ```java
 add(
-        "/membership",
-        "Генерация документа...",
+        "/buttondoc",
+        "Generation of the doc...",
         (chatId, username, firstName, lastName) -> {
-            логика создания файла;
-            return true; //если все хорошо
+            lofic of creating the file;
+            return true; //if everything is ok
         }
 )
         .addButton(
@@ -217,12 +208,11 @@ add(
                     System.out.println("someone pressed debug button");
                     return "You're a developer, Luke!";
                 })
-                    .addFile("путь к файлу", "краткое описание");
+                    .addFile("path", "description");
         );
 ```
 
-
-Позже будет дополнено. Затем, этот класс можно использовать при инициализации бота:
+Later more info will be added. As a result, we can use our class in Bot Initialization:
 
 ```java
 public class Main {
@@ -239,4 +229,4 @@ public class Main {
 
 to be continued...
 
-[Урок 3. Добавление стадий/регистрации](tut3_registration.md)
+[Lesson 3. Adding Stages/Registration](tut3_registration.md)

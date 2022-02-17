@@ -1,7 +1,8 @@
-# Добавление логирования в бота
+# Adding logs to your bot
 
-Под логированием в боте подразумевается логирование всех сообщений, которые в него присылают. Это полезно на стадии разработки
-(собственно плюсы логирования я думаю все понимают). Перейдем к делу.
+### [Версия на русском языке](tut1_logs_ru.md)
+
+Let's add one method call to our bot initialization before calling method start:
 
 ```java
 public class Main {
@@ -16,20 +17,15 @@ public class Main {
 }
 ```
 
-Разберем вышеописанное. Во-первых, добавление логов происходит с помощью метода addLogs. В него мы вставляем лямбда-выражение. 
-Давайте разберем его параметры:
+To add logs you should use method addLogs. It takes a lambda expression. 
+Let's analyze its parameters:
 
-- message - текстовое сообщение, которое отправляют боту;
-- chatId - уникальное Id каждого пользователя. Если задумаетесь над ведением базы данных пользователей, то это значение
-  будет отличным первичным ключом. тип значения - Long;
-- username - значение типа String, не подходит для роли первичного ключа, так как его можно изменить,
-  однако удобен для идентификации;
-- firstName - имя пользователя, которое задается в телеграмме;
-- secondName - фамилия пользователя, которая задается в телеграмме (если ее не задать, возвращает имя пользователя).
+- message - text message that bot receives (String);
+- chatId - unique ID of every user, would be the perfect primary key (Long);
+- username - not that good to be the primary key (can be changed) (String);
+- firstName - first name of the user (String);
+- secondName - second name of the user (if there's no second name it returns first name) (String).
 
-В следующий раз хорошенько подумайте, прежде чем пользоваться разного рода анонимными чатами в телеграмме - ведь сохранить 
-ваши сообщения это дело пяти секунд.
+Try to use this code and send some messages to your bot.
 
-Попробуйте внедрить этот код в свой проект и оцените результат.
-
-[Урок 2. Добавление команд](tut2_commands.md)
+[Lesson 2. Adding Commands](tut2_commands.md)

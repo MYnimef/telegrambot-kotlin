@@ -1,16 +1,12 @@
-# Добавление регистрации/запроса ввода
+# Adding registration/states to your bot
 
-### ATTENTION!!! Контент ниже предполагает добавление в проект базы данных или иного способа сохранения данных (го сохранять их в текстовый файл). Лично я предпочитаю использование Spring framework - в тырнете полно гайдов на эту тему.
+### [Версия на русском языке](tut3_registration_ru.md)
 
-Представим ситуацию - вы хотите, чтобы после ввода пользователя одной из команд бот запросил у него ввод каких-либо данных. 
-Или же вы вовсе хотите добавить функционал регистрации в свой бот. Как это сделать? Что-ж, давайте разбираться.
+### Adding states
 
-### Добавление стадий
-
-Так как телеграмм никак не сохраняет состояние пользователя в текущий момент эта задача ложится на нас. Состояния пользователя 
-это то, на каком этапе он находится при взаимодействии с ботом. Рассмотрим простой пример - нам нужно добавить регистрацию 
-пользователей, для сбора определенных данных - имени, города и возраста (привет дайвинчик). Для этого для начала реализуем 
-перечисление (enum) состояний:
+Telegram doesn't save any user state so that is the thing we should. User state 
+determine the bot reaction. Simple example - we want to add a registration to our bot 
+to collect any data from users. For that purpose lets create enum class of states:
 
 ```java
 public enum MyUserState {
@@ -22,19 +18,19 @@ public enum MyUserState {
 }
 ```
 
-Разберем зачем нужны все эти состояния: 
+Let's analyze these states: 
 
-- UNAUTHORIZED - это состояние мы будем выдавать всем тем, кого нет в нашей базе данных (те, кто пишет боту первый раз);
-- SET_NAME - состояние, при котором мы будем ожидать от пользователя ввода имени;
-- SET_CITY - состояние, при котором мы будем ожидать от пользователя ввода города;
-- SET_AGE - состояние, при котором мы будем ожидать от пользователя ввода возраста;
-- AUTHORIZED - авторизированное состояние, при котором любой ввод пользователя будет расцениваться как ввод команды.
+- UNAUTHORIZED - the state of user that send a message for the first time;
+- SET_NAME - bot expects user to input his name;
+- SET_CITY - bot expects user to enter his city;
+- SET_AGE - bot expects user to input his age;
+- AUTHORIZED - the state when bot expects user to enter any command.
 
-Вопрос в следующем - что нам делать с этими состояниями? Хороший вопрос, продолжаем углубление...
+What should we do with this enum? Let
 
-### Создание обработчика стадий
+### Creating states handler
 
-По аналогии с добавлением своих команд, нам нужно создать класс, наследованный от RegistrationBuilder:
+As we did our own class to add commands, we should create class that extends RegistrationBuilder:
 
 ```java
 public class MyRegistrationBuilder extends RegistrationBuilder<MyUserState> {
@@ -45,10 +41,7 @@ public class MyRegistrationBuilder extends RegistrationBuilder<MyUserState> {
 }
 ```
 
-Давайте разберем то, что мы сделали. RegistrationBuilder это шаблонный класс (не кидайтесь камнями - я спал очень мало, могу допускать 
-ошибки в формулировках). Суть в том, что RegistrationBuilder<сюда мы вставляем наш только что созданный enum>.
-
-Разберем добавление стадий регистрации... 
+Let's add some states... 
 
 ```java
 public class MyRegistrationBuilder extends RegistrationBuilder<MyUserState> {
@@ -56,13 +49,13 @@ public class MyRegistrationBuilder extends RegistrationBuilder<MyUserState> {
     public void initialize() {
         add(
                 MyUserState.UNAUTHORIZED,
-                "Ты кто такой?"
+                "Who are you?"
         );
     }
 }
 ```
 
-Выше мы добавили сообщение, которое будет высылаться всем пользователям со стадией UNAUTHORIZED. Давайте заполним остальные стадии:
+We added a message that will receive all the users with UNAUTHORIZED state. Let's add more states:
 
 ```java
 public class MyRegistrationBuilder extends RegistrationBuilder<MyUserState> {
@@ -70,41 +63,41 @@ public class MyRegistrationBuilder extends RegistrationBuilder<MyUserState> {
     public void initialize() {
         add(
                 MyUserState.UNAUTHORIZED,
-                "Ты кто такой?"
+                "Who are you?"
         );
 
         add(
                 MyUserState.SET_NAME,
-                "Крутое имя, бро",
-                "пчел, тыыыы",
-                (input, chatId) -> { какая-то логика с возвращаемым значением типа boolean }
+                "Nice name, bro",
+                "bruh",
+                (input, chatId) -> { some logic with return type boolean }
         );
 
         add(
                 MyUserState.SET_CITY,
-                "Я тоже из мухосрани",
-                "пчел, тыыыыыыыыыыыыыыыыыыы",
-                (input, chatId) -> { какая-то другая логика с возвращаемым значением типа boolean }
+                "I'm from the same town",
+                "bruuuuuuuuuuuh",
+                (input, chatId) -> { some logic with return type boolean }
         );
 
         add(
                 MyUserState.SET_AGE,
                 "Welcome to the club, buddy!",
-                "пчел, тыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыы",
-                (input, chatId) -> { еще одна логика с возвращаемым значением типа boolean }
+                "bruuuuuuuuuuuuuuuuuuuuuuh",
+                (input, chatId) -> { some logic with return type boolean }
         );
     }
 }
 ```
 
-Возможно, у вас сейчас возникает много вопросов. Это нормально. По двум причинам. Во-первых - я плох в составлении документации 
-и инструкций, а во вторых больше ответов на ваши вопросы последует далее. Единственное, что стоит отметить прямо здесь - 
-под "логикой" выше понимается код, который будет менять состояние пользователя в базе данных на другое, а также возвращать 
-true или false в зависимости от того, устраивает ли нас ввод пользователя (если нет никакой разницы просто возвращайте true).
+Probably rn you have a lot of questions. It's fine. Coz of two reasons. First -I'm too bad at writing instructions, 
+second - some of your answers will disappear later. One thing that should be said rn  - 
+by saying 'logic' I mean the logic, that will change user state, and will return
+true or false depending on whether you are satisfied with user input or no.
 
-### Внедрение стадий в бота
+### Adding states to our bot
 
-Для того чтобы внедрить все вышеописанное в бота, нам нужно добавить к инициализации бота вызов следующего метода:
+To add states to our bot, we should call the method addRegistration before start method call in Bot Initialization:
 
 ```java
 public class Main {
@@ -120,14 +113,13 @@ public class Main {
 }
 ```
 
-Что-ж, теперь по порядку. В метод addRegistration мы должны добавить 3 параметра:
+We should add 3 parameters in addRegistration method:
 
-- класс, созданный нами выше;
-- логику определения состояния пользователя по chatId. Тут стоит отметить, что если пользователь в первый раз обращается к боту, у него 
-не может быть никакого состояния, поэтому мы в конкретном примере должны вернуть UNAUTHORIZED, а в бд записать пользователю состояние
-SET_NAME;
-- состояние, при котором обрабатываются команды. В нашем случае это AUTHORIZED.
+- our class that extends RegistrationBuilder;
+- lambda that returns user state by chatId. If user send message to the bot for the first time he actually can't have a state. 
+So as solution I suggest return UNAUTHORIZED state in this expression and set to user SET_NAME state;
+- commands handler state. In our case it's AUTHORIZED.
 
-Поздравляю, мы добавили регистрацию в нашего бота!
+Congratulations, now our bot have registration!
 
 to be continued...
