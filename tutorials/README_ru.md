@@ -1,6 +1,6 @@
 [![](https://jitpack.io/v/MYnimef/telegrambot-java.svg)](https://jitpack.io/#MYnimef/telegrambot-java) [![Supported version](https://img.shields.io/badge/Telegram%20Bot%20API-5.7-blue)](https://core.telegram.org/bots/api-changelog#january-31-2022)
 
-### [English version](README_ru.md)
+### [English version](README.md)
 
 # API для создания telegram бота
 
