@@ -1,83 +1,97 @@
 package com.mynimef.bot.config;
 
-import com.mynimef.bot.callback.ICallback;
-import com.mynimef.bot.commands.ICommand;
-import com.mynimef.bot.handlers.CallbackHandler;
-import com.mynimef.bot.handlers.IHandler;
+
+import com.mynimef.bot.IBot;
+import com.mynimef.bot.actions.IAction;
+import com.mynimef.bot.actions.ICallback;
+import com.mynimef.bot.actions.ISaveLogs;
+import com.mynimef.bot.containers.*;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.*;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-abstract class TelegramBot extends TelegramLongPollingBot implements IBot, IMessageReceiver {
-    protected final Map<String, ICommand> commands;
-    protected final ICommand noCommandRecognized;
-    private final Map<Long, ICallback> callbacks;
 
-    private final String token;
+final class TelegramBot extends TelegramLongPollingBot implements IBot {
+
+    private final Map<String, IAction> commands;
+    private final IAction noCommandRecognized;
+    private final Map<String, ICallback> callbacks;
+
     private final String username;
 
+    private final ISaveLogs saveLog;
+
     TelegramBot(
-            Map<String, ICommand> commands,
-            ICommand noCommandRecognized,
-            Map<Long, ICallback> callbacks,
+            Map<String, IAction> commands,
+            IAction noCommandRecognized,
+            Map<String, ICallback> callbacks,
             String token,
-            String username
+            String username,
+            ISaveLogs saveLog
     ) {
+        super(token);
         this.commands = commands;
         this.noCommandRecognized = noCommandRecognized;
         this.callbacks = callbacks;
-        this.token = token;
         this.username = username;
+        this.saveLog = saveLog;
     }
 
     @Override
     public String getBotUsername() { return username; }
 
     @Override
-    public String getBotToken() { return token; }
-
-    @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasMessage()) {
-            Message message = update.getMessage();
+        new Thread(() -> {
+            if (update.hasMessage()) {
+                Message message = update.getMessage();
 
-            if (message.hasText()) {
-                onMessageReceived(message);
+                if (message.hasText()) {
+                    onMessageReceived(message);
+                }
+            } else if (update.hasCallbackQuery()) {
+                if (callbacks != null) {
+                    onCallbackReceived(update.getCallbackQuery());
+                } else {
+                    sendMessage(
+                            update.getCallbackQuery().getMessage().getChatId(),
+                            "There are no callbacks. Please, set them properly"
+                    );
+                }
             }
-        } else if (update.hasCallbackQuery()) {
-            new Thread(
-                    () -> getHandler(
-                            new CallbackHandler(
-                                    update.getCallbackQuery().getMessage().getChatId().toString(),
-                                    update.getCallbackQuery().getMessage().getMessageId(),
-                                    update.getCallbackQuery().getData(),
-                                    callbacks
-                            )
-                                    .start()
-                    )
-            )
-                    .start();
-        }
+        }).start();
     }
 
-    protected abstract void handleMessage(
-            String text,
-            Long id,
-            String username,
-            String firstName,
-            String lastName
-    );
+    private void onMessageReceived(Message message) {
+        String text = message.getText();
+        Chat chat = message.getChat();
+        Long chatId = message.getChatId();
+        String username = chat.getUserName();
+        String firstName = chat.getFirstName();
+        String lastName = chat.getLastName();
 
-    protected void getHandler(IHandler handler) {
-        sendMessage(handler.getReply());
-        sendDocs(handler.getDocs());
+        if (saveLog != null) {
+            saveLog.log(text, chatId, username, firstName, lastName);
+        }
+        IAction command = commands.get(text);
+        if (command != null) {
+            command.action(text, chatId, username, firstName, lastName, this);
+        } else {
+            noCommandRecognized.action(text, chatId, username, firstName, lastName, this);
+        }
     }
 
     private void sendMessage(BotApiMethod<?> reply) {
@@ -90,21 +104,114 @@ abstract class TelegramBot extends TelegramLongPollingBot implements IBot, IMess
         }
     }
 
-    private void sendDocs(List<SendDocument> docs) {
+    private void sendDoc(SendDocument doc) {
         try {
-            for (SendDocument doc : docs) {
-                execute(doc);
-            }
+            execute(doc);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void sendMessage(String chatId, String text) {
+    public void sendMessage(Long chatId, BotMessage message) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setText(message.getText());
+
+        if (message.doesHaveButtons()) {
+            sendMessage.setReplyMarkup(setReply(message.getButtons()));
+        }
+
+        sendMessage(sendMessage);
+        for (BotFile file: message.getFiles()) {
+            sendDoc(chatId, file);
+        }
+    }
+
+    public void sendDoc(Long chatId, BotFile file) {
+        SendDocument doc = new SendDocument();
+        doc.setChatId(chatId);
+        doc.setDocument(new InputFile(new File(file.path())));
+        doc.setCaption(file.description());
+        sendDoc(doc);
+    }
+
+    private static InlineKeyboardMarkup setReply(List<ButtonLine> buttons) {
+        InlineKeyboardMarkup replyMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> keyboardButtons = new ArrayList<>();
+
+        for (ButtonLine line: buttons) {
+            List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
+            for (Button markup: line.getLine()) {
+                InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
+                inlineKeyboardButton.setText(markup.getLabel());
+                inlineKeyboardButton.setCallbackData(markup.getCallback());
+                keyboardButtonsRow.add(inlineKeyboardButton);
+            }
+            keyboardButtons.add(keyboardButtonsRow);
+        }
+
+        replyMarkup.setKeyboard(keyboardButtons);
+        return replyMarkup;
+    }
+
+    private static ReplyKeyboardMarkup setKeyboard(ButtonKeyboardLine[] buttons) {
+        ReplyKeyboardMarkup replyMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboardButtons = new ArrayList<>();
+
+        for (ButtonKeyboardLine line: buttons) {
+            KeyboardRow keyboardRow = new KeyboardRow();
+            for (String text : line.getLine()) {
+                keyboardRow.add(text);
+                keyboardButtons.add(keyboardRow);
+            }
+        }
+
+        replyMarkup.setKeyboard(keyboardButtons);
+        replyMarkup.setResizeKeyboard(true);
+        replyMarkup.setOneTimeKeyboard(true);
+        return replyMarkup;
+    }
+
+    @Override
+    public void sendMessage(Long chatId, String text) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setText(text);
         sendMessage(message);
+    }
+
+    private void onCallbackReceived(CallbackQuery query) {
+        Long chatId = query.getMessage().getChatId();
+        Integer messageId = query.getMessage().getMessageId();
+        Chat chat = query.getMessage().getChat();
+        String username = chat.getUserName();
+        String firstName = chat.getFirstName();
+        String lastName = chat.getLastName();
+
+
+        ICallback callback = callbacks.get(query.getData());
+        if (callback != null) {
+            callback.callback(chatId, messageId, username, firstName, lastName, this);
+        } else {
+            sendMessage(chatId, "There are no callback \"" + query.getData() + "\"");
+        }
+    }
+
+    public void editMessage(Long chatId, Integer messageId, BotMessage message) {
+        EditMessageText editMessage = new EditMessageText();
+
+        editMessage.setChatId(chatId);
+        editMessage.setMessageId(messageId);
+        editMessage.setText(message.getText());
+
+        if (message.doesHaveButtons()) {
+            editMessage.setReplyMarkup(setReply(message.getButtons()));
+        }
+
+        sendMessage(editMessage);
+        for (BotFile file: message.getFiles()) {
+            sendDoc(chatId, file);
+        }
     }
 }

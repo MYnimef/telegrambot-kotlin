@@ -1,18 +1,20 @@
 package com.mynimef.bot.config;
 
-import com.mynimef.bot.commands.CommandsBuilder;
-import com.mynimef.bot.registration.RegistrationBuilder;
+import com.mynimef.bot.IBot;
+import com.mynimef.bot.actions.ISaveLogs;
+import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-@SuppressWarnings("rawtypes")
-public class BotCreator {
+
+public final class BotCreator {
+
     private final String token;
     private final String username;
 
     private CommandsBuilder commands;
-
-    private RegistrationBuilder stages;
-    private IGetState state;
-    private CommandsState commandsState;
+    private CallbacksBuilder callbacks;
 
     private ISaveLogs logs;
 
@@ -29,15 +31,8 @@ public class BotCreator {
         return this;
     }
 
-    public <E extends Enum<E>> BotCreator addRegistration(
-            RegistrationBuilder<E> stages,
-            IGetState<E> state,
-            E commandsState
-    ) {
-        this.stages = stages;
-        this.stages.initialize();
-        this.state = state;
-        this.commandsState = new CommandsState<>(commandsState);
+    public BotCreator addCallbacks(CallbacksBuilder callbacks) {
+        this.callbacks = callbacks;
         return this;
     }
 
@@ -46,57 +41,56 @@ public class BotCreator {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     public IBot start() {
-        if (stages != null && state != null && commandsState != null) {
-            if (logs != null) {
-                return new BotInitializer(
-                        commands != null ? commands : getEmptyCommands(),
-                        stages,
-                        token,
-                        username,
-                        state,
-                        commandsState.getCommandsState(),
-                        logs
-                )
-                        .Init();
-            } else {
-                return new BotInitializer(
-                        commands != null ? commands : getEmptyCommands(),
-                        stages,
-                        token,
-                        username,
-                        state,
-                        commandsState.getCommandsState()
-                )
-                        .Init();
-            }
-        } else {
-            if (logs != null) {
-                return new BotInitializer(
-                        commands != null ? commands : getEmptyCommands(),
-                        token,
-                        username,
-                        logs
-                )
-                        .Init();
-            } else {
-                return new BotInitializer(
-                        commands != null ? commands : getEmptyCommands(),
-                        token,
-                        username
-                )
-                        .Init();
-            }
+        if (commands == null) {
+            commands = getEmptyCommands();
         }
+
+        return initBot(
+                new TelegramBot(
+                        commands.getCommands(),
+                        commands.getNoCommandRecognized(),
+                        (callbacks != null) ? callbacks.getCallbacks() : null,
+                        token,
+                        username,
+                        logs
+                )
+        );
+    }
+
+    private TelegramBot initBot(TelegramBot bot) {
+        try {
+            TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
+
+            try {
+                telegramBotsApi.registerBot(bot);
+                return bot;
+            } catch (TelegramApiRequestException e) {
+                e.printStackTrace();
+            }
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     private CommandsBuilder getEmptyCommands() {
         return new CommandsBuilder() {
             @Override
-            public void initialize() { }
+            public void init() { }
+
             @Override
-            protected String nonCommandUpdate(String message, Long chatId, String username, String firstName, String lastName) { return null; }
+            protected void nonCommandUpdate(
+                    String text,
+                    Long id,
+                    String username,
+                    String firstName,
+                    String lastName,
+                    IBot bot
+            ) {
+                bot.sendMessage(id, "Configure CommandsBuilder class");
+            }
         };
     }
 }

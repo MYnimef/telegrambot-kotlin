@@ -1,10 +1,10 @@
 package com.mynimef.bot.containers;
 
-public class VMFile {
+public class BotFile {
     private final String path;
     private final String description;
 
-    public VMFile(String path, String description) {
+    public BotFile(String path, String description) {
         this.path = path;
         this.description = description;
     }
