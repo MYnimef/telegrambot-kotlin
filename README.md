@@ -1,4 +1,4 @@
-[![](https://jitpack.io/v/MYnimef/telegrambot-java.svg)](https://jitpack.io/#MYnimef/telegrambot-java) [![Supported version](https://img.shields.io/badge/Telegram%20Bot%20API-5.7-blue)](https://core.telegram.org/bots/api-changelog#january-31-2022)
+[![](https://jitpack.io/v/MYnimef/telegrambot-java.svg)](https://jitpack.io/#MYnimef/telegrambot-java) [![Supported version](https://img.shields.io/badge/Telegram%20Bot%20API-6.5-blue)](https://core.telegram.org/bots/api-changelog#january-31-2022)
 
 ### [Версия на русском языке](tutorials/README_ru.md)
 
