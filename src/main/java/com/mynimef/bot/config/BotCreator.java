@@ -83,13 +83,13 @@ public final class BotCreator {
             @Override
             protected void nonCommandUpdate(
                     String text,
-                    Long id,
+                    String chatId,
                     String username,
                     String firstName,
                     String lastName,
                     IBot bot
             ) {
-                bot.sendMessage(id, "Configure CommandsBuilder class");
+                bot.sendMessage(chatId, "Configure CommandsBuilder class");
             }
         };
     }

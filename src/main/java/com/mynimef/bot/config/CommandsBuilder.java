@@ -19,26 +19,12 @@ public abstract class CommandsBuilder {
     protected void add(String command, String reply) {
         commands.put(command, (
                 String text,
-                Long id,
+                String chatId,
                 String username,
                 String firstName,
                 String lastName,
                 IBot bot
-        ) -> bot.sendMessage(id, reply));
-    }
-
-    protected void add(String command, String reply, IAction action) {
-        commands.put(command, (
-                String text,
-                Long id,
-                String username,
-                String firstName,
-                String lastName,
-                IBot bot
-        ) -> {
-            action.action(text, id, username, firstName, lastName, bot);
-            bot.sendMessage(id, reply);
-        });
+        ) -> bot.sendMessage(chatId, reply));
     }
 
     protected void add(String command, IAction action) { commands.put(command, action); }
@@ -50,7 +36,7 @@ public abstract class CommandsBuilder {
 
     protected abstract void nonCommandUpdate(
             String text,
-            Long id,
+            String id,
             String username,
             String firstName,
             String lastName,

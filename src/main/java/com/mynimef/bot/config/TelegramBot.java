@@ -67,7 +67,7 @@ final class TelegramBot extends TelegramLongPollingBot implements IBot {
                     onCallbackReceived(update.getCallbackQuery());
                 } else {
                     sendMessage(
-                            update.getCallbackQuery().getMessage().getChatId(),
+                            update.getCallbackQuery().getMessage().getChatId().toString(),
                             "There are no callbacks. Please, set them properly"
                     );
                 }
@@ -78,7 +78,7 @@ final class TelegramBot extends TelegramLongPollingBot implements IBot {
     private void onMessageReceived(Message message) {
         String text = message.getText();
         Chat chat = message.getChat();
-        Long chatId = message.getChatId();
+        String chatId = message.getChatId().toString();
         String username = chat.getUserName();
         String firstName = chat.getFirstName();
         String lastName = chat.getLastName();
@@ -113,7 +113,7 @@ final class TelegramBot extends TelegramLongPollingBot implements IBot {
     }
 
     @Override
-    public void sendMessage(Long chatId, BotMessage message) {
+    public void sendMessage(String chatId, BotMessage message) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setText(message.getText());
@@ -128,7 +128,8 @@ final class TelegramBot extends TelegramLongPollingBot implements IBot {
         }
     }
 
-    public void sendDoc(Long chatId, BotFile file) {
+    @Override
+    public void sendDoc(String chatId, BotFile file) {
         SendDocument doc = new SendDocument();
         doc.setChatId(chatId);
         doc.setDocument(new InputFile(new File(file.path())));
@@ -174,7 +175,7 @@ final class TelegramBot extends TelegramLongPollingBot implements IBot {
     }
 
     @Override
-    public void sendMessage(Long chatId, String text) {
+    public void sendMessage(String chatId, String text) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setText(text);
@@ -182,8 +183,9 @@ final class TelegramBot extends TelegramLongPollingBot implements IBot {
     }
 
     private void onCallbackReceived(CallbackQuery query) {
-        Long chatId = query.getMessage().getChatId();
-        Integer messageId = query.getMessage().getMessageId();
+        String chatId = query.getMessage().getChatId().toString();
+        String messageId = query.getMessage().getMessageId().toString();
+        String message = query.getMessage().getText();
         Chat chat = query.getMessage().getChat();
         String username = chat.getUserName();
         String firstName = chat.getFirstName();
@@ -192,13 +194,14 @@ final class TelegramBot extends TelegramLongPollingBot implements IBot {
 
         ICallback callback = callbacks.get(query.getData());
         if (callback != null) {
-            callback.callback(chatId, messageId, username, firstName, lastName, this);
+            callback.callback(chatId, messageId, message, username, firstName, lastName, this);
         } else {
             sendMessage(chatId, "There are no callback \"" + query.getData() + "\"");
         }
     }
 
-    public void editMessage(Long chatId, Integer messageId, BotMessage message) {
+    @Override
+    public void editMessage(String chatId, Integer messageId, BotMessage message) {
         EditMessageText editMessage = new EditMessageText();
 
         editMessage.setChatId(chatId);
