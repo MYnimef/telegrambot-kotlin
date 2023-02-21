@@ -5,7 +5,7 @@ import com.mynimef.bot.IBot;
 public interface ICallback {
     void callback(
             String chatId,
-            String messageId,
+            Integer messageId,
             String message,
             String username,
             String firstName,

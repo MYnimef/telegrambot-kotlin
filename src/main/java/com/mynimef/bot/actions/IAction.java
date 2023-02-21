@@ -4,7 +4,7 @@ import com.mynimef.bot.IBot;
 
 public interface IAction {
     void action(
-            String text,
+            String message,
             String chatId,
             String username,
             String firstName,

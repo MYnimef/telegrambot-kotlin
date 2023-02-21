@@ -10,6 +10,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -184,7 +185,7 @@ final class TelegramBot extends TelegramLongPollingBot implements IBot {
 
     private void onCallbackReceived(CallbackQuery query) {
         String chatId = query.getMessage().getChatId().toString();
-        String messageId = query.getMessage().getMessageId().toString();
+        Integer messageId = query.getMessage().getMessageId();
         String message = query.getMessage().getText();
         Chat chat = query.getMessage().getChat();
         String username = chat.getUserName();
@@ -198,6 +199,15 @@ final class TelegramBot extends TelegramLongPollingBot implements IBot {
         } else {
             sendMessage(chatId, "There are no callback \"" + query.getData() + "\"");
         }
+    }
+
+    @Override
+    public void editMessage(String chatId, Integer messageId, String text) {
+        EditMessageText editMessage = new EditMessageText();
+        editMessage.setChatId(chatId);
+        editMessage.setMessageId(messageId);
+        editMessage.setText(text);
+        sendMessage(editMessage);
     }
 
     @Override
@@ -216,5 +226,13 @@ final class TelegramBot extends TelegramLongPollingBot implements IBot {
         for (BotFile file: message.getFiles()) {
             sendDoc(chatId, file);
         }
+    }
+
+    @Override
+    public void deleteMessage(String chatId, Integer messageId) {
+        DeleteMessage delete = new DeleteMessage();
+        delete.setChatId(chatId);
+        delete.setMessageId(messageId);
+        sendMessage(delete);
     }
 }
