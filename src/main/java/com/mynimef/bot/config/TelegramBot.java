@@ -18,6 +18,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.updateshandlers.SentCallback;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -80,29 +81,32 @@ final class TelegramBot extends TelegramLongPollingBot implements IBot {
         String text = message.getText();
         Chat chat = message.getChat();
         String chatId = message.getChatId().toString();
+        Integer messageId = message.getMessageId();
         String username = chat.getUserName();
         String firstName = chat.getFirstName();
         String lastName = chat.getLastName();
 
         if (saveLog != null) {
-            saveLog.log(text, chatId, username, firstName, lastName);
+            saveLog.log(text, chatId, messageId, username, firstName, lastName);
         }
         IAction command = commands.get(text);
         if (command != null) {
-            command.action(text, chatId, username, firstName, lastName, this);
+            command.action(text, chatId, messageId, username, firstName, lastName, this);
         } else {
-            noCommandRecognized.action(text, chatId, username, firstName, lastName, this);
+            noCommandRecognized.action(text, chatId, messageId, username, firstName, lastName, this);
         }
     }
 
-    private void sendMessage(BotApiMethod<?> reply) {
+    private Integer sendMessage(BotApiMethod<?> reply) {
         if (reply != null) {
             try {
-                execute(reply);
+                Message sentMessage = (Message) execute(reply);
+                return sentMessage.getMessageId();
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
         }
+        return null;
     }
 
     private void sendDoc(SendDocument doc) {
@@ -114,7 +118,7 @@ final class TelegramBot extends TelegramLongPollingBot implements IBot {
     }
 
     @Override
-    public void sendMessage(String chatId, BotMessage message) {
+    public Integer sendMessage(String chatId, BotMessage message) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setText(message.getText());
@@ -123,10 +127,11 @@ final class TelegramBot extends TelegramLongPollingBot implements IBot {
             sendMessage.setReplyMarkup(setReply(message.getButtons()));
         }
 
-        sendMessage(sendMessage);
+        Integer messageId = sendMessage(sendMessage);
         for (BotFile file: message.getFiles()) {
             sendDoc(chatId, file);
         }
+        return messageId;
     }
 
     @Override
@@ -176,11 +181,11 @@ final class TelegramBot extends TelegramLongPollingBot implements IBot {
     }
 
     @Override
-    public void sendMessage(String chatId, String text) {
+    public Integer sendMessage(String chatId, String text) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setText(text);
-        sendMessage(message);
+        return sendMessage(message);
     }
 
     private void onCallbackReceived(CallbackQuery query) {
@@ -233,6 +238,11 @@ final class TelegramBot extends TelegramLongPollingBot implements IBot {
         DeleteMessage delete = new DeleteMessage();
         delete.setChatId(chatId);
         delete.setMessageId(messageId);
-        sendMessage(delete);
+
+        try {
+            execute(delete);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
 }

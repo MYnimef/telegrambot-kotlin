@@ -84,6 +84,7 @@ public final class BotCreator {
             protected void nonCommandUpdate(
                     String text,
                     String chatId,
+                    Integer messageId,
                     String username,
                     String firstName,
                     String lastName,

@@ -20,6 +20,7 @@ public abstract class CommandsBuilder {
         commands.put(command, (
                 String text,
                 String chatId,
+                Integer messageId,
                 String username,
                 String firstName,
                 String lastName,
@@ -36,7 +37,8 @@ public abstract class CommandsBuilder {
 
     protected abstract void nonCommandUpdate(
             String text,
-            String id,
+            String chatId,
+            Integer messageId,
             String username,
             String firstName,
             String lastName,

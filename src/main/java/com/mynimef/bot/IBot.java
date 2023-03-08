@@ -5,8 +5,8 @@ import com.mynimef.bot.containers.BotFile;
 
 public interface IBot {
 
-    void sendMessage(String chatId, BotMessage message);
-    void sendMessage(String chatId, String text);
+    Integer sendMessage(String chatId, BotMessage message);
+    Integer sendMessage(String chatId, String text);
     void editMessage(String chatId, Integer messageId, String text);
     void editMessage(String chatId, Integer messageId, BotMessage message);
     void deleteMessage(String chatId, Integer messageId);

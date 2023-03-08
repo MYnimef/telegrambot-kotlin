@@ -6,6 +6,7 @@ public interface IAction {
     void action(
             String message,
             String chatId,
+            Integer messageId,
             String username,
             String firstName,
             String lastName,
