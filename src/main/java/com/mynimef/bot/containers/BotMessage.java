@@ -49,17 +49,15 @@ public final class BotMessage {
         return this;
     }
 
-
     public List<BotFile> getFiles() { return files; }
-
 
     public void setFiles(List<BotFile> files) {
         this.files = files;
     }
 
-
     public BotMessage addFile(String path, String description) {
         files.add(new BotFile(path, description));
         return this;
     }
+
 }

@@ -1,6 +1,7 @@
 package com.mynimef.bot.containers;
 
 public class ButtonKeyboardLine {
+
     private final String[] line;
 
     public ButtonKeyboardLine(String[] line) {
@@ -8,4 +9,5 @@ public class ButtonKeyboardLine {
     }
 
     public String[] getLine() { return line; }
+
 }

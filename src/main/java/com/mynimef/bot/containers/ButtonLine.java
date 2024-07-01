@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ButtonLine {
+
     private final List<Button> line;
 
     public ButtonLine(Button button) {
@@ -16,4 +17,5 @@ public class ButtonLine {
     public void addButton(Button button) {
         this.line.add(button);
     }
+
 }
