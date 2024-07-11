@@ -111,9 +111,9 @@ internal class TelegramBot(
         return messageId
     }
 
-    override fun sendDoc(chatId: String, file: BotFile) {
-        val doc = SendDocument(chatId, InputFile(File(file.path())))
-        doc.caption = file.description()
+    override fun sendDoc(chatId: String, botFile: BotFile) {
+        val doc = SendDocument(chatId, InputFile(botFile.file))
+        doc.caption = botFile.description
         sendDoc(doc)
     }
 

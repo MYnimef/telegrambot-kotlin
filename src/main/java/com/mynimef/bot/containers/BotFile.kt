@@ -1,16 +1,8 @@
 package com.mynimef.bot.containers
 
+import java.io.File
+
 data class BotFile(
-    val path: String,
-    val description: String
-) {
-
-    fun path(): String {
-        return path
-    }
-
-    fun description(): String {
-        return description
-    }
-
-}
+    val file: File,
+    val description: String? = null
+)

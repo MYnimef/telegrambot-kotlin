@@ -1,5 +1,6 @@
 package com.mynimef.bot.containers;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,8 +56,8 @@ public final class BotMessage {
         this.files = files;
     }
 
-    public BotMessage addFile(String path, String description) {
-        files.add(new BotFile(path, description));
+    public BotMessage addFile(File file, String description) {
+        files.add(new BotFile(file, description));
         return this;
     }
 

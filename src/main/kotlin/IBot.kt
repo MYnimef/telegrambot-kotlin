@@ -13,6 +13,6 @@ interface IBot {
 
     fun deleteMessage(chatId: String, messageId: Int)
 
-    fun sendDoc(chatId: String, file: BotFile)
+    fun sendDoc(chatId: String, botFile: BotFile)
 
 }

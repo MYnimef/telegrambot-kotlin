@@ -1,6 +1,6 @@
 import com.mynimef.bot.containers.UserCommand
 
-class MyCommandsBuilder {
+internal class MyCommandsBuilder {
 
     @BotCommand("/start")
     fun sayHello(userCommand: UserCommand, bot: IBot) {
