@@ -1,5 +1,3 @@
-package com.mynimef.bot
-
 import com.mynimef.bot.containers.BotFile
 import com.mynimef.bot.containers.BotMessage
 

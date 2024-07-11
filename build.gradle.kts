@@ -25,6 +25,6 @@ tasks.withType<JavaCompile> {
 }
 
 dependencies {
-    implementation("org.telegram:telegrambots:6.9.7.0")
-    implementation("org.telegram:telegrambotsextensions:6.9.7.1")
+    implementation("org.telegram:telegrambots-longpolling:7.7.0")
+    implementation("org.telegram:telegrambots-client:7.7.0")
 }
