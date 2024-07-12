@@ -24,8 +24,14 @@ class BotCreator(private val token: String) {
                 method.parameters[1].type == IBot::class.java &&
                 method.returnType == Void.TYPE
             ) {
-                commands[annotation.command] = { userCommand, bot ->
+                val action: Action = { userCommand, bot ->
                     method.invoke(commandsClass, userCommand, bot)
+                }
+                annotation.commands.forEach { command ->
+                    if (commands.containsKey(command)) {
+                        //TODO
+                    }
+                    commands[command] = action
                 }
             } else {
                 throw Exception()

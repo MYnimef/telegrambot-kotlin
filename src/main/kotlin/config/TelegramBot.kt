@@ -21,7 +21,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException
 import org.telegram.telegrambots.meta.generics.TelegramClient
-import java.io.File
 import java.io.Serializable
 
 
@@ -100,18 +99,18 @@ internal class TelegramBot(
             message.text
         )
 
-        if (message.doesHaveButtons()) {
-            sendMessage.replyMarkup = setReply(message.buttons)
+        if (message.buttonLines.isNotEmpty()) {
+            sendMessage.replyMarkup = setReply(message.buttonLines)
         }
 
         val messageId = sendMessage(sendMessage)
         for (file in message.files) {
-            sendDoc(chatId, file)
+            sendMessage(chatId, file)
         }
         return messageId
     }
 
-    override fun sendDoc(chatId: String, botFile: BotFile) {
+    override fun sendMessage(chatId: String, botFile: BotFile) {
         val doc = SendDocument(chatId, InputFile(botFile.file))
         doc.caption = botFile.description
         sendDoc(doc)
@@ -147,13 +146,13 @@ internal class TelegramBot(
         editMessage.chatId = chatId
         editMessage.messageId = messageId
 
-        if (message.doesHaveButtons()) {
-            editMessage.replyMarkup = setReply(message.buttons)
+        if (message.buttonLines.isNotEmpty()) {
+            editMessage.replyMarkup = setReply(message.buttonLines)
         }
 
         sendMessage(editMessage)
         for (file in message.files) {
-            sendDoc(chatId, file)
+            sendMessage(chatId, file)
         }
     }
 

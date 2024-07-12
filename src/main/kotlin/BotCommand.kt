@@ -1,3 +1,3 @@
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class BotCommand(val command: String)
+annotation class BotCommand(vararg val commands: String)
