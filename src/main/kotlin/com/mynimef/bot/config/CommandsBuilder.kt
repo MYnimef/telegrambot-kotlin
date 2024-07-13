@@ -2,6 +2,7 @@ package com.mynimef.bot.config
 
 import com.mynimef.bot.IBot
 import com.mynimef.bot.containers.UserCommand
+import com.mynimef.bot.executable.Action
 
 
 abstract class CommandsBuilder {

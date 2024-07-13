@@ -1,18 +1,14 @@
-package com.mynimef.bot.config
+package com.mynimef.bot.executable
 
 import com.mynimef.bot.IBot
-import com.mynimef.bot.actions.ICallback
 import com.mynimef.bot.containers.*
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient
-import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery
 import org.telegram.telegrambots.meta.api.objects.InputFile
-import org.telegram.telegrambots.meta.api.objects.Update
 import org.telegram.telegrambots.meta.api.objects.message.Message
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup
@@ -24,57 +20,9 @@ import org.telegram.telegrambots.meta.generics.TelegramClient
 import java.io.Serializable
 
 
-internal typealias Action = (userCommand: UserCommand, bot: IBot) -> Unit
-internal typealias SaveLog = (userCommand: UserCommand) -> Unit
-
-
-internal class TelegramBot(
-    private val commands: Map<String, Action>,
-    private val noCommandRecognized: Action,
-    private val callbacks: Map<String, ICallback>?,
-    token: String,
-    private val saveLog: SaveLog? = null
-) : LongPollingSingleThreadUpdateConsumer, IBot {
+internal class TelegramBot(token: String): IBot {
 
     private val telegramClient: TelegramClient = OkHttpTelegramClient(token)
-
-    override fun consume(update: Update) = Thread {
-        if (update.hasMessage()) {
-            val message = update.message
-
-            if (message.hasText()) {
-                onMessageReceived(message)
-            }
-        } else if (update.hasCallbackQuery()) {
-            if (callbacks != null) {
-                onCallbackReceived(update.callbackQuery)
-            } else {
-                sendMessage(
-                    update.callbackQuery.message.chatId.toString(),
-                    "There are no callbacks. Please, set them properly"
-                )
-            }
-        }
-    }.start()
-
-    private fun onMessageReceived(message: Message) {
-        val userCommand = UserCommand(
-            text = message.text,
-            chatId = message.chatId.toString(),
-            messageId = message.messageId,
-            username = message.chat.userName,
-            firstName = message.chat.firstName,
-            lastName = message.chat.lastName
-        )
-
-        saveLog?.let { it(userCommand) }
-        val action = commands[message.text]
-        if (action != null) {
-            action(userCommand, this)
-        } else {
-            noCommandRecognized(userCommand, this)
-        }
-    }
 
     private fun<T: Serializable> sendMessage(reply: BotApiMethod<T>): Int? {
         try {
@@ -123,15 +71,6 @@ internal class TelegramBot(
             text
         )
         return sendMessage(message)
-    }
-
-    private fun onCallbackReceived(query: CallbackQuery) {
-        val chatId = query.message.chatId.toString()
-        val messageId = query.message.messageId
-
-        val callback = callbacks!![query.data]
-        //callback?.callback(chatId, messageId, message, username, firstName, lastName, this)
-        //    ?: sendMessage(chatId, "There are no callback \"" + query.data + "\"")
     }
 
     override fun editMessage(chatId: String, messageId: Int, text: String) {

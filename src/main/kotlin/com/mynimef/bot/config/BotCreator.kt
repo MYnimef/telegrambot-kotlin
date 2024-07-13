@@ -3,6 +3,10 @@ package com.mynimef.bot.config
 import com.mynimef.bot.BotCommand
 import com.mynimef.bot.IBot
 import com.mynimef.bot.containers.UserCommand
+import com.mynimef.bot.executable.Action
+import com.mynimef.bot.executable.BotConsumer
+import com.mynimef.bot.executable.SaveLog
+import com.mynimef.bot.executable.TelegramBot
 import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication
 
 
@@ -60,21 +64,18 @@ class BotCreator(
     }
 
     fun start(): IBot? {
-        return initBot(
-            TelegramBot(
-                commands = commands,
-                noCommandRecognized = { ii, hh -> },
-                callbacks = if ((callbacks != null)) callbacks!!.getCallbacks() else null,
-                token = token,
-                saveLog = logs
-            )
+        val bot = TelegramBot(token)
+        val botConsumer = BotConsumer(
+            telegramBot = bot,
+            commands = commands,
+            noCommandRecognized = { ii, hh -> },
+            callbacks = if ((callbacks != null)) callbacks!!.getCallbacks() else null,
+            saveLog = logs
         )
-    }
 
-    private fun initBot(bot: TelegramBot): TelegramBot? {
         try {
             TelegramBotsLongPollingApplication().use { botsApplication ->
-                botsApplication.registerBot(token, bot)
+                botsApplication.registerBot(token, botConsumer)
                 Thread.currentThread().join()
                 return bot
             }
