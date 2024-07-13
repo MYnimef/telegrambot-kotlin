@@ -2,9 +2,9 @@ package com.mynimef.bot.config
 
 import com.mynimef.bot.BotCommand
 import com.mynimef.bot.IBot
-import com.mynimef.bot.containers.UserCommand
+import com.mynimef.bot.containers.UserMessage
 import com.mynimef.bot.executable.*
-import com.mynimef.bot.executable.Action
+import com.mynimef.bot.executable.ActionMessage
 import com.mynimef.bot.executable.BotConsumer
 import com.mynimef.bot.executable.SaveLog
 import com.mynimef.bot.executable.TelegramBot
@@ -17,8 +17,8 @@ class BotCreator(
 
 ) {
 
-    private var commands: MutableMap<String, Action> = HashMap()
-    private var callbacks: MutableMap<String, Action> = HashMap()
+    private var commands: MutableMap<String, ActionMessage> = HashMap()
+    private var callbacks: MutableMap<String, ActionCallback> = HashMap()
 
     private var logs: SaveLog? = null
 
@@ -29,11 +29,11 @@ class BotCreator(
             if (
                 annotation != null &&
                 method.parameters.size == 2 &&
-                method.parameters[0].type == UserCommand::class.java &&
+                method.parameters[0].type == UserMessage::class.java &&
                 method.parameters[1].type == IBot::class.java &&
                 method.returnType == Void.TYPE
             ) {
-                val action: Action = { userCommand, bot ->
+                val action: ActionMessage = { userCommand, bot ->
                     method.invoke(commandsClass, userCommand, bot)
                 }
                 annotation.commands.forEach { command ->

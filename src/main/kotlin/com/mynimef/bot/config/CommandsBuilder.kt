@@ -1,16 +1,15 @@
 package com.mynimef.bot.config
 
-import com.mynimef.bot.IBot
-import com.mynimef.bot.containers.UserCommand
-import com.mynimef.bot.executable.Action
+import com.mynimef.bot.executable.ActionMessage
+import okhttp3.internal.toImmutableMap
 
 
 abstract class CommandsBuilder {
 
-    private val _commands: MutableMap<String, Action> = HashMap()
-    internal val commands: Map<String, (command: UserCommand, bot: IBot) -> Unit> by lazy {
+    private val _commands: MutableMap<String, ActionMessage> = HashMap()
+    internal val commands by lazy {
         init()
-        _commands
+        _commands.toImmutableMap()
     }
 
     protected abstract fun init()
@@ -21,10 +20,10 @@ abstract class CommandsBuilder {
         }
     }
 
-    protected fun add(command: String, action: Action) {
+    protected fun add(command: String, action: ActionMessage) {
         _commands[command] = action
     }
 
-    abstract val nonCommandUpdate: Action
+    abstract val nonCommandUpdate: ActionMessage
 
 }

@@ -1,21 +1,20 @@
 package com.mynimef.bot.config
 
-import com.mynimef.bot.IBot
-import com.mynimef.bot.containers.UserCommand
-import com.mynimef.bot.executable.Action
+import com.mynimef.bot.executable.ActionCallback
+import okhttp3.internal.toImmutableMap
 
 
 abstract class CallbacksBuilder {
 
-    private val _callbacks: MutableMap<String, Action> = HashMap()
-    internal val callbacks: Map<String, (command: UserCommand, bot: IBot) -> Unit> by lazy {
+    private val _callbacks: MutableMap<String, ActionCallback> = HashMap()
+    internal val callbacks by lazy {
         init()
-        _callbacks
+        _callbacks.toImmutableMap()
     }
 
     protected abstract fun init()
 
-    protected fun add(callbackId: String, action: Action) {
+    protected fun add(callbackId: String, action: ActionCallback) {
         _callbacks[callbackId] = action
     }
 

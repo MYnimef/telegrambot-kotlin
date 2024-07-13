@@ -1,8 +1,8 @@
 package com.mynimef.bot.containers
 
-data class UserCommand(
+data class UserCallback(
 
-    val text: String,
+    val callbackId: String,
 
     val chatId: String,
 
