@@ -3,7 +3,7 @@ plugins {
 }
 
 group "com.mynimef"
-version "0.0.7"
+version "0.0.1"
 
 repositories {
     mavenCentral()
