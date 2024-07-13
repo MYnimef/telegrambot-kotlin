@@ -3,6 +3,7 @@ package com.mynimef.bot.config
 import com.mynimef.bot.BotCommand
 import com.mynimef.bot.IBot
 import com.mynimef.bot.containers.UserCommand
+import com.mynimef.bot.executable.*
 import com.mynimef.bot.executable.Action
 import com.mynimef.bot.executable.BotConsumer
 import com.mynimef.bot.executable.SaveLog
@@ -17,7 +18,7 @@ class BotCreator(
 ) {
 
     private var commands: MutableMap<String, Action> = HashMap()
-    private var callbacks: CallbacksBuilder? = null
+    private var callbacks: MutableMap<String, Action> = HashMap()
 
     private var logs: SaveLog? = null
 
@@ -53,8 +54,8 @@ class BotCreator(
         return this
     }
 
-    fun addCallbacks(callbacks: CallbacksBuilder?): BotCreator {
-        this.callbacks = callbacks
+    fun addCallbacks(builder: CallbacksBuilder): BotCreator {
+        this.callbacks.putAll(builder.callbacks)
         return this
     }
 
@@ -69,7 +70,7 @@ class BotCreator(
             telegramBot = bot,
             commands = commands,
             noCommandRecognized = { ii, hh -> },
-            callbacks = if ((callbacks != null)) callbacks!!.getCallbacks() else null,
+            callbacks = callbacks,
             saveLog = logs
         )
 

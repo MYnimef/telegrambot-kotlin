@@ -1,21 +1,22 @@
 package com.mynimef.bot.config
 
-import com.mynimef.bot.actions.ICallback
+import com.mynimef.bot.IBot
+import com.mynimef.bot.containers.UserCommand
+import com.mynimef.bot.executable.Action
 
 
 abstract class CallbacksBuilder {
 
-    private val callbacks: MutableMap<String, ICallback> = HashMap()
+    private val _callbacks: MutableMap<String, Action> = HashMap()
+    internal val callbacks: Map<String, (command: UserCommand, bot: IBot) -> Unit> by lazy {
+        init()
+        _callbacks
+    }
 
     protected abstract fun init()
 
-    fun getCallbacks(): Map<String, ICallback> {
-        init()
-        return callbacks
-    }
-
-    protected fun add(callbackId: String, callback: ICallback) {
-        callbacks[callbackId] = callback
+    protected fun add(callbackId: String, action: Action) {
+        _callbacks[callbackId] = action
     }
 
 }

@@ -1,7 +1,6 @@
 package com.mynimef.bot.executable
 
 import com.mynimef.bot.IBot
-import com.mynimef.bot.actions.ICallback
 import com.mynimef.bot.containers.UserCommand
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery
@@ -17,23 +16,18 @@ internal class BotConsumer(
     private val telegramBot: TelegramBot,
     private val commands: Map<String, Action>,
     private val noCommandRecognized: Action,
-    private val callbacks: Map<String, ICallback>?,
+    private val callbacks: Map<String, Action>,
     private val saveLog: SaveLog? = null
 ): LongPollingSingleThreadUpdateConsumer {
 
     override fun consume(update: Update) {
         if (update.hasMessage()) {
             val message = update.message
-
             if (message.hasText()) {
                 onMessageReceived(message)
             }
         } else if (update.hasCallbackQuery()) {
-            if (callbacks != null) {
-                onCallbackReceived(update.callbackQuery)
-            } else {
-                //TODO
-            }
+            onCallbackReceived(update.callbackQuery)
         }
     }
 
@@ -57,12 +51,18 @@ internal class BotConsumer(
     }
 
     private fun onCallbackReceived(query: CallbackQuery) {
-        val chatId = query.message.chatId.toString()
-        val messageId = query.message.messageId
-
-        val callback = callbacks!![query.data]
-        //callback?.callback(chatId, messageId, message, username, firstName, lastName, this)
-        //    ?: sendMessage(chatId, "There are no callback \"" + query.data + "\"")
+        val callback = callbacks[query.data]
+        callback?.invoke(
+            UserCommand(
+                    text = "",
+                    chatId = query.message.chatId.toString(),
+                    messageId = query.message.messageId,
+                    username = query.message.chat.userName,
+                    firstName = query.message.chat.firstName,
+                    lastName = query.message.chat.lastName
+            ),
+            telegramBot
+        )
     }
 
 }

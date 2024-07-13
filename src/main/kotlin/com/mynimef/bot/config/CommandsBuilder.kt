@@ -8,7 +8,7 @@ import com.mynimef.bot.executable.Action
 abstract class CommandsBuilder {
 
     private val _commands: MutableMap<String, Action> = HashMap()
-    val commands: Map<String, (command: UserCommand, bot: IBot) -> Unit> by lazy {
+    internal val commands: Map<String, (command: UserCommand, bot: IBot) -> Unit> by lazy {
         init()
         _commands
     }

@@ -1,7 +1,8 @@
 package com.mynimef.bot
 
-import com.mynimef.bot.containers.*
-import java.io.File
+import com.mynimef.bot.containers.BotMessage
+import com.mynimef.bot.containers.Button
+import com.mynimef.bot.containers.UserCommand
 
 
 internal class MyBotCommands {
@@ -22,7 +23,7 @@ internal class MyBotCommands {
                 text = "dada",
             )
                 .addButtonsLine(
-                    Button(label = "great", callback = "jwj"),
+                    Button(label = "great", callback = "haha"),
                     Button(label = "nope", callback = "wj"),
                 )
         )
