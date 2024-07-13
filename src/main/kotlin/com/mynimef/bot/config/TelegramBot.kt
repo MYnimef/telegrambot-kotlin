@@ -27,6 +27,7 @@ import java.io.Serializable
 internal typealias Action = (userCommand: UserCommand, bot: IBot) -> Unit
 internal typealias SaveLog = (userCommand: UserCommand) -> Unit
 
+
 internal class TelegramBot(
     private val commands: Map<String, Action>,
     private val noCommandRecognized: Action,
@@ -100,7 +101,7 @@ internal class TelegramBot(
         )
 
         if (message.buttonLines.isNotEmpty()) {
-            sendMessage.replyMarkup = setReply(message.buttonLines)
+            sendMessage.replyMarkup = setButtons(message.buttonLines)
         }
 
         val messageId = sendMessage(sendMessage)
@@ -147,7 +148,7 @@ internal class TelegramBot(
         editMessage.messageId = messageId
 
         if (message.buttonLines.isNotEmpty()) {
-            editMessage.replyMarkup = setReply(message.buttonLines)
+            editMessage.replyMarkup = setButtons(message.buttonLines)
         }
 
         sendMessage(editMessage)
@@ -168,13 +169,13 @@ internal class TelegramBot(
 }
 
 
-private fun setReply(buttons: List<ButtonLine>): InlineKeyboardMarkup {
+private fun setButtons(buttonsLines: List<List<Button>>): InlineKeyboardMarkup {
     val keyboardButtons: MutableList<InlineKeyboardRow> = ArrayList()
-    for (line in buttons) {
+    buttonsLines.forEach { buttonLine ->
         val keyboardButtonsRow = InlineKeyboardRow()
-        for ((label, callback) in line.line) {
-            val inlineKeyboardButton = InlineKeyboardButton(label)
-            inlineKeyboardButton.callbackData = callback
+        buttonLine.forEach { button ->
+            val inlineKeyboardButton = InlineKeyboardButton(button.label)
+            inlineKeyboardButton.callbackData = button.callback
             keyboardButtonsRow.add(inlineKeyboardButton)
         }
         keyboardButtons.add(keyboardButtonsRow)

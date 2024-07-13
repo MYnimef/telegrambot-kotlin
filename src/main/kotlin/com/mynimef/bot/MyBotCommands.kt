@@ -2,6 +2,7 @@ package com.mynimef.bot
 
 import com.mynimef.bot.containers.*
 
+
 internal class MyBotCommands {
 
     @BotCommand("/start")
@@ -18,10 +19,11 @@ internal class MyBotCommands {
             chatId = userCommand.chatId,
             message = BotMessage(
                 text = "dada",
-                buttonLines = mutableListOf(
-                    ButtonLine(Button(label = "hi" , callback = "gggh"))
-                )
             )
+                .addButtonsLine(
+                    Button(label = "great", callback = "jwj"),
+                    Button(label = "nope", callback = "wj"),
+                )
         )
 
         bot.sendMessage(

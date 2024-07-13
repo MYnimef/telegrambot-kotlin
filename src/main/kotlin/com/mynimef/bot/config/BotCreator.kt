@@ -6,7 +6,11 @@ import com.mynimef.bot.containers.UserCommand
 import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication
 
 
-class BotCreator(private val token: String) {
+class BotCreator(
+
+    private val token: String
+
+) {
 
     private var commands: MutableMap<String, Action> = HashMap()
     private var callbacks: CallbacksBuilder? = null
@@ -37,6 +41,11 @@ class BotCreator(private val token: String) {
                 throw Exception()
             }
         }
+        return this
+    }
+
+    fun addCommands(builder: CommandsBuilder): BotCreator {
+        this.commands.putAll(builder.commands)
         return this
     }
 
