@@ -1,7 +1,5 @@
 # Adding logs to your bot
 
-### [Версия на русском языке](tut1_logs_ru.md)
-
 Let's add one method call to our bot initialization before calling method start:
 
 ```java

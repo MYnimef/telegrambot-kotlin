@@ -1,7 +1,5 @@
 [![](https://jitpack.io/v/MYnimef/telegrambot-java.svg)](https://jitpack.io/#MYnimef/telegrambot-kotlin) [![Supported version](https://img.shields.io/badge/Telegram%20Bot%20API-6.5-blue)](https://core.telegram.org/bots/api-changelog#january-31-2022)
 
-### [Версия на русском языке](tutorials/README_ru.md)
-
 # API for creating telegram bot
 
 This API uses [Rubenlagus' library for Java](https://github.com/rubenlagus/TelegramBots).

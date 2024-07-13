@@ -1,20 +1,16 @@
 # Adding commands to your bot
 
-### [Версия на русском языке](tut2_commands_ru.md)
-
 In order to add your own commands you need to do a few things. First - create a class that extends CommandsBuilder:
 
-```java
-public class MyCommandsBuilder extends CommandsBuilder { 
-    @Override 
-    protected void initialize() {
-    
+```kotlin
+class MyCommandsBuilder: CommandsBuilder() { 
+     
+    override fun init() {
     }
     
-    @Override 
-    protected String nonCommandUpdate(String message, Long chatId, String username, String firstName, String lastName) {
-        return null;
+    override fun nonCommandUpdate() {
     }
+    
 }
 ```
 
@@ -22,8 +18,9 @@ As you can see - you need to override two methods. initialize - method, where we
 nonCommandsUpdate - method that returns String - this is what user will receive if no command recognized. For example let's create
 echo bot:
 
-```java
-public class MyCommandsBuilder extends CommandsBuilder { 
+```kotlin
+class MyCommandsBuilder: CommandsBuilder { 
+    
     @Override 
     protected void initialize() {
     
@@ -33,32 +30,33 @@ public class MyCommandsBuilder extends CommandsBuilder {
     protected String nonCommandUpdate(String message, Long chatId, String username, String firstName, String lastName) {
         return message;
     }
+    
 }
 ```
 
 This bot will repeat every message you will send to it. Now, let's add commands in initialize:
 
-```java
-public class MyCommandsBuilder extends CommandsBuilder {
-    @Override
-    protected void initialize() {
+```kotlin
+class MyCommandsBuilder: CommandsBuilder {
+    
+    override fun init() {
         add(
                 "/start", 
                 "Hi!"
         );
     }
     
-    @Override 
-    protected String nonCommandUpdate(String message, Long chatId, String username, String firstName, String lastName) {
-        return message;
+    override fun nonCommandUpdate(String message, Long chatId, String username, String firstName, String lastName) {
+        return message
     }
+    
 }
 ```
 
 Let's add the command that will perform an action when user will use it. The following code is still in the method
 initialize:
 
-```java
+```kotlin
 add(
         "/test", 
         "watch your console",
@@ -71,7 +69,7 @@ add(
 This command will print "Hello, world!" in console every time when it will be used. 
 Now, lets add the command with custom reply text:
 
-```java
+```kotlin
 add(
         "/sayhi", 
         "Hello, ",
@@ -214,19 +212,12 @@ add(
 
 Later more info will be added. As a result, we can use our class in Bot Initialization:
 
-```java
-public class Main {
-    public static void main(String[] args) {
-        IBot bot = new BotCreator(
-                "token",
-                "username"
-        )
-                .addCommands(new MyCommandsBuilder())
-                .start();
-    }
+```kotlin
+fun main() {
+    val bot = BotCreator("YOUR_BOT_TOKEN")
+        .addCommands(builder = MyCommandsBuilder())
+        .start()
 }
 ```
 
 to be continued...
-
-[Lesson 3. Adding Stages/Registration](tut3_registration.md)
