@@ -4,8 +4,8 @@ plugins {
     `java-library`
 }
 
-group "com.mynimef"
-version "0.0.1"
+group = "com.github.MYnimef"
+version = "0.0.1"
 
 repositories {
     mavenCentral()
@@ -27,4 +27,15 @@ dependencies {
     implementation("org.telegram:telegrambots-client:7.7.0")
 
     testImplementation(kotlin("test"))
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
 }
