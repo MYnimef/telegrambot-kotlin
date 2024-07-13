@@ -24,9 +24,9 @@ internal class TelegramBot(token: String): IBot {
 
     private val telegramClient: TelegramClient = OkHttpTelegramClient(token)
 
-    private fun<T: Serializable> sendMessage(reply: BotApiMethod<T>): Int? {
+    private fun<T: Serializable> sendMessage(message: BotApiMethod<T>): Int? {
         try {
-            val sentMessage = telegramClient.execute(reply) as Message
+            val sentMessage = telegramClient.execute(message) as Message
             return sentMessage.messageId
         } catch (e: TelegramApiException) {
             e.printStackTrace()
@@ -34,29 +34,22 @@ internal class TelegramBot(token: String): IBot {
         return null
     }
 
-    private fun sendDoc(doc: SendDocument) {
+    private fun sendDoc(doc: SendDocument): Int? {
         try {
-            telegramClient.execute(doc)
+            val sendMessage = telegramClient.execute(doc)
+            return sendMessage.messageId
         } catch (e: TelegramApiException) {
             e.printStackTrace()
         }
+        return null
     }
 
     override fun sendMessage(chatId: String, message: BotMessage): Int? {
-        val sendMessage = SendMessage(
-            chatId,
-            message.text
-        )
-
+        val sendMessage = SendMessage(chatId, message.text)
         if (message.buttonLines.isNotEmpty()) {
             sendMessage.replyMarkup = setButtons(message.buttonLines)
         }
-
-        val messageId = sendMessage(sendMessage)
-        for (file in message.files) {
-            sendMessage(chatId, file)
-        }
-        return messageId
+        return sendMessage(sendMessage)
     }
 
     override fun sendMessage(chatId: String, botFile: BotFile) {
@@ -89,11 +82,7 @@ internal class TelegramBot(token: String): IBot {
         if (message.buttonLines.isNotEmpty()) {
             editMessage.replyMarkup = setButtons(message.buttonLines)
         }
-
         sendMessage(editMessage)
-        for (file in message.files) {
-            sendMessage(chatId, file)
-        }
     }
 
     override fun deleteMessage(chatId: String, messageId: Int) {
