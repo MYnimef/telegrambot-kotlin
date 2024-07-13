@@ -23,8 +23,8 @@ internal class MyBotCommands {
                 text = "dada",
             )
                 .addButtonsLine(
-                    Button(label = "great", callback = "haha"),
-                    Button(label = "nope", callback = "wj"),
+                    Button(label = "great", callbackId = "haha"),
+                    Button(label = "nope", callbackId = "wj"),
                 )
         )
 

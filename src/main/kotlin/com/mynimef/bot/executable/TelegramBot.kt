@@ -103,7 +103,7 @@ private fun setButtons(buttonsLines: List<List<Button>>): InlineKeyboardMarkup {
         val keyboardButtonsRow = InlineKeyboardRow()
         buttonLine.forEach { button ->
             val inlineKeyboardButton = InlineKeyboardButton(button.label)
-            inlineKeyboardButton.callbackData = button.callback
+            inlineKeyboardButton.callbackData = button.callbackId
             keyboardButtonsRow.add(inlineKeyboardButton)
         }
         keyboardButtons.add(keyboardButtonsRow)
