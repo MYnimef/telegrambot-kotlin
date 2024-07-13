@@ -1,6 +1,6 @@
-package com.mynimef.bot.config
+package com.mynimef.telegrambot.config
 
-import com.mynimef.bot.executable.ActionMessage
+import com.mynimef.telegrambot.executable.ActionMessage
 import okhttp3.internal.toImmutableMap
 
 

@@ -1,8 +1,8 @@
-package com.mynimef.bot.containers
+package com.mynimef.telegrambot.containers
 
-data class UserMessage(
+data class UserCallback(
 
-    val text: String,
+    val callbackId: String,
 
     val chatId: String,
 

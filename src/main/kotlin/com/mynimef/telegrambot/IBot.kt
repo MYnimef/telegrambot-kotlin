@@ -1,7 +1,7 @@
-package com.mynimef.bot
+package com.mynimef.telegrambot
 
-import com.mynimef.bot.containers.BotFile
-import com.mynimef.bot.containers.BotMessage
+import com.mynimef.telegrambot.containers.BotFile
+import com.mynimef.telegrambot.containers.BotMessage
 
 interface IBot {
 

@@ -1,13 +1,13 @@
-package com.mynimef.bot.config
+package com.mynimef.telegrambot.config
 
-import com.mynimef.bot.BotCommand
-import com.mynimef.bot.IBot
-import com.mynimef.bot.containers.UserMessage
-import com.mynimef.bot.executable.*
-import com.mynimef.bot.executable.ActionMessage
-import com.mynimef.bot.executable.BotConsumer
-import com.mynimef.bot.executable.SaveLog
-import com.mynimef.bot.executable.TelegramBot
+import com.mynimef.telegrambot.BotCommand
+import com.mynimef.telegrambot.IBot
+import com.mynimef.telegrambot.containers.UserMessage
+import com.mynimef.telegrambot.executable.*
+import com.mynimef.telegrambot.executable.ActionMessage
+import com.mynimef.telegrambot.executable.BotConsumer
+import com.mynimef.telegrambot.executable.SaveLog
+import com.mynimef.telegrambot.executable.TelegramBot
 import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication
 
 

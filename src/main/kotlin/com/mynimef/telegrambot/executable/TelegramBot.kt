@@ -1,7 +1,7 @@
-package com.mynimef.bot.executable
+package com.mynimef.telegrambot.executable
 
-import com.mynimef.bot.IBot
-import com.mynimef.bot.containers.*
+import com.mynimef.telegrambot.IBot
+import com.mynimef.telegrambot.containers.*
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument

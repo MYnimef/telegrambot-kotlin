@@ -1,4 +1,4 @@
-package com.mynimef.bot
+package com.mynimef.telegrambot
 
 
 enum class Emoji(val value: String) {

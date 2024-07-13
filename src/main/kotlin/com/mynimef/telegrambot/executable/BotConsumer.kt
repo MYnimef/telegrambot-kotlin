@@ -1,8 +1,8 @@
-package com.mynimef.bot.executable
+package com.mynimef.telegrambot.executable
 
-import com.mynimef.bot.IBot
-import com.mynimef.bot.containers.UserCallback
-import com.mynimef.bot.containers.UserMessage
+import com.mynimef.telegrambot.IBot
+import com.mynimef.telegrambot.containers.UserCallback
+import com.mynimef.telegrambot.containers.UserMessage
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery
 import org.telegram.telegrambots.meta.api.objects.Update

@@ -1,4 +1,4 @@
-package com.mynimef.bot
+package com.mynimef.telegrambot
 
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)

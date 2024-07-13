@@ -1,4 +1,4 @@
-package com.mynimef.bot.containers
+package com.mynimef.telegrambot.containers
 
 import java.io.File
 
