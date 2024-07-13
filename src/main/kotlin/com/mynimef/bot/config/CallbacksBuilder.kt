@@ -1,6 +1,7 @@
-package config
+package com.mynimef.bot.config
 
-import actions.ICallback
+import com.mynimef.bot.actions.ICallback
+
 
 abstract class CallbacksBuilder {
 

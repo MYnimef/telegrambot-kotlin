@@ -1,7 +1,7 @@
-package config
+package com.mynimef.bot.config
 
-import IBot
-import actions.ICallback
+import com.mynimef.bot.IBot
+import com.mynimef.bot.actions.ICallback
 import com.mynimef.bot.containers.*
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer

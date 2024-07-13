@@ -1,6 +1,7 @@
-package actions
+package com.mynimef.bot.actions
 
-import IBot
+import com.mynimef.bot.IBot
+
 
 interface ICallback {
 

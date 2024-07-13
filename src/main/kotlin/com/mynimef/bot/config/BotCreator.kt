@@ -1,7 +1,7 @@
-package config
+package com.mynimef.bot.config
 
-import BotCommand
-import IBot
+import com.mynimef.bot.BotCommand
+import com.mynimef.bot.IBot
 import com.mynimef.bot.containers.UserCommand
 import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication
 
