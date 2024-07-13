@@ -2,7 +2,7 @@ package com.mynimef.bot
 
 import com.mynimef.bot.containers.*
 
-internal class MyCommandsBuilder {
+internal class MyBotCommands {
 
     @BotCommand("/start")
     fun sayHello(userCommand: UserCommand, bot: IBot) {
