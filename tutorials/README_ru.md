@@ -1,4 +1,4 @@
-[![](https://jitpack.io/v/MYnimef/telegrambot-java.svg)](https://jitpack.io/#MYnimef/telegrambot-java) [![Supported version](https://img.shields.io/badge/Telegram%20Bot%20API-5.7-blue)](https://core.telegram.org/bots/api-changelog#january-31-2022)
+[![](https://jitpack.io/v/MYnimef/telegrambot-java.svg)](https://jitpack.io/#MYnimef/telegrambot-kotlin) [![Supported version](https://img.shields.io/badge/Telegram%20Bot%20API-5.7-blue)](https://core.telegram.org/bots/api-changelog#january-31-2022)
 
 ### [English version](../README.md)
 
@@ -24,8 +24,8 @@
 
 <dependency>
     <groupId>com.github.MYnimef</groupId>
-    <artifactId>telegrambot-java</artifactId>
-    <version>0.0.2</version>
+    <artifactId>telegrambot-kotlin</artifactId>
+    <version>0.0.1</version>
 </dependency>
 ```
 
@@ -47,7 +47,7 @@ dependencies {
     
     ...
     
-    implementation 'com.github.MYnimef:telegrambot-java:0.0.2'
+    implementation 'com.github.MYnimef:telegrambot-kotlin:0.0.1'
 }
 ```
 
@@ -63,15 +63,10 @@ compileTestJava.options.encoding = 'UTF-8'
 
 ## Инициализация бота
 
-```java
-public class Main {
-    public static void main(String[] args) {
-        IBot bot = new BotCreator(
-                "token",
-                "username"
-        )
-                .start();
-    }
+```kotlin
+fun main() {
+    val bot = BotCreator("token")
+        .start()
 }
 ```
 
@@ -79,7 +74,6 @@ public class Main {
 
 * [Урок 1. Логирование](tut1_logs_ru.md)
 * [Урок 2. Добавление команд](tut2_commands_ru.md)
-* [Урок 3. Добавление стадий/регистрации](tut3_registration_ru.md)
 
 
 
