@@ -4,14 +4,14 @@ data class UserCallback(
 
     val callbackId: String,
 
-    val chatId: String,
+    val originalMessageId: Int,
 
-    val messageId: Int,
+    override val userId: String,
 
-    val username: String?,
+    override val username: String?,
 
-    val firstName: String?,
+    override val firstName: String?,
 
-    val lastName: String?
+    override val lastName: String?
 
-)
+): UserUpdate

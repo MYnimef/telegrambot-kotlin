@@ -17,9 +17,10 @@ class BotCreator(
 
 ) {
 
-    private var commands: MutableMap<String, ActionMessage> = HashMap()
-    private var noCommandRecognized: ActionMessage? = null
-    private var callbacks: MutableMap<String, ActionCallback> = HashMap()
+    private var messageAction: ActionMessage? = null
+    private var commandsActions: MutableMap<String, ActionMessage> = HashMap()
+    private var contactAction: ActionContact? = null
+    private var callbacksActions: MutableMap<String, ActionCallback> = HashMap()
 
     private var logs: SaveLog? = null
 
@@ -38,10 +39,10 @@ class BotCreator(
                     method.invoke(commandsClass, userCommand, bot)
                 }
                 annotation.commands.forEach { command ->
-                    if (commands.containsKey(command)) {
+                    if (commandsActions.containsKey(command)) {
                         //TODO
                     }
-                    commands[command] = action
+                    commandsActions[command] = action
                 }
             } else {
                 throw Exception()
@@ -50,14 +51,11 @@ class BotCreator(
         return this
     }
 
-    fun addCommands(builder: CommandsBuilder): BotCreator {
-        this.commands.putAll(builder.commands)
-        this.noCommandRecognized = builder.nonCommandUpdate
-        return this
-    }
-
-    fun addCallbacks(builder: CallbacksBuilder): BotCreator {
-        this.callbacks.putAll(builder.callbacks)
+    fun addUpdatesHandler(handler: UpdatesHandler): BotCreator {
+        this.messageAction = handler.messageAction
+        this.commandsActions.putAll(handler.commandsActions)
+        this.contactAction = handler.contactAction
+        this.callbacksActions.putAll(handler.callbacksActions)
         return this
     }
 
@@ -70,9 +68,10 @@ class BotCreator(
         val bot = TelegramBot(token)
         val botConsumer = BotConsumer(
             telegramBot = bot,
-            commands = commands,
-            noCommandRecognized = noCommandRecognized ?: { message, bot -> },
-            callbacks = callbacks,
+            commandsActions = commandsActions,
+            noCommandRecognizedAction = messageAction ?: { message, bot -> },
+            contactAction = contactAction ?: { contact, bot -> },
+            callbacksActions = callbacksActions,
             saveLog = logs
         )
 

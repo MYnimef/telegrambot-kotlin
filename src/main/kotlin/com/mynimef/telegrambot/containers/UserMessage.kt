@@ -4,14 +4,14 @@ data class UserMessage(
 
     val text: String,
 
-    val chatId: String,
-
     val messageId: Int,
 
-    val username: String?,
+    override val userId: String,
 
-    val firstName: String?,
+    override val username: String?,
 
-    val lastName: String?
+    override val firstName: String?,
 
-)
+    override val lastName: String?
+
+): UserUpdate
