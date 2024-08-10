@@ -97,13 +97,16 @@ internal class TelegramBot(token: String): IBot {
 }
 
 
-private fun setButtons(buttonsLines: List<List<Button>>): InlineKeyboardMarkup {
+private fun setButtons(buttonsLines: List<List<IButton>>): InlineKeyboardMarkup {
     val keyboardButtons: MutableList<InlineKeyboardRow> = ArrayList()
     buttonsLines.forEach { buttonLine ->
         val keyboardButtonsRow = InlineKeyboardRow()
         buttonLine.forEach { button ->
             val inlineKeyboardButton = InlineKeyboardButton(button.label)
-            inlineKeyboardButton.callbackData = button.callbackId
+            when (button) {
+                is ButtonCallback -> inlineKeyboardButton.callbackData = button.callbackId
+                is ButtonURL -> inlineKeyboardButton.url = button.url
+            }
             keyboardButtonsRow.add(inlineKeyboardButton)
         }
         keyboardButtons.add(keyboardButtonsRow)

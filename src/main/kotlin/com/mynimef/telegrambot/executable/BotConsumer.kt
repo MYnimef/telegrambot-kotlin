@@ -43,25 +43,20 @@ internal class BotConsumer(
             lastName = message.chat.lastName
         )
 
-        saveLog?.let { it(userMessage) }
-        val action = commands[message.text]
-        if (action != null) {
-            action(userMessage, telegramBot)
-        } else {
-            noCommandRecognized(userMessage, telegramBot)
-        }
+        saveLog?.invoke(userMessage)
+        commands[message.text]?.invoke(userMessage, telegramBot) ?: noCommandRecognized(userMessage, telegramBot)
     }
 
     private fun onCallbackReceived(query: CallbackQuery) {
         val callback = callbacks[query.data]
         callback?.invoke(
             UserCallback(
-                    callbackId = query.data,
-                    chatId = query.message.chatId.toString(),
-                    messageId = query.message.messageId,
-                    username = query.message.chat.userName,
-                    firstName = query.message.chat.firstName,
-                    lastName = query.message.chat.lastName
+                callbackId = query.data,
+                chatId = query.message.chatId.toString(),
+                messageId = query.message.messageId,
+                username = query.message.chat.userName,
+                firstName = query.message.chat.firstName,
+                lastName = query.message.chat.lastName
             ),
             telegramBot
         )
