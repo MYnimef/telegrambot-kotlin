@@ -126,6 +126,7 @@ private fun setButtons(buttonsLines: List<List<ButtonKeyboard>>): ReplyKeyboardM
         buttonLine.forEach { button ->
             val keyboardButton = KeyboardButton(button.label)
             when (button) {
+                is ButtonKeyboard.Text -> {}
                 is ButtonKeyboard.AskPhone -> keyboardButton.requestContact = true
             }
             keyboardButtonsRow.add(keyboardButton)
