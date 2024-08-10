@@ -8,11 +8,8 @@ abstract class CommandsBuilder {
 
     private val _commands: MutableMap<String, ActionMessage> = HashMap()
     internal val commands by lazy {
-        init()
         _commands.toImmutableMap()
     }
-
-    protected abstract fun init()
 
     protected fun add(command: String, reply: String) {
         _commands[command] = { userCommand, bot ->

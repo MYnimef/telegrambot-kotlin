@@ -18,6 +18,7 @@ class BotCreator(
 ) {
 
     private var commands: MutableMap<String, ActionMessage> = HashMap()
+    private var noCommandRecognized: ActionMessage? = null
     private var callbacks: MutableMap<String, ActionCallback> = HashMap()
 
     private var logs: SaveLog? = null
@@ -51,6 +52,7 @@ class BotCreator(
 
     fun addCommands(builder: CommandsBuilder): BotCreator {
         this.commands.putAll(builder.commands)
+        this.noCommandRecognized = builder.nonCommandUpdate
         return this
     }
 
@@ -69,7 +71,7 @@ class BotCreator(
         val botConsumer = BotConsumer(
             telegramBot = bot,
             commands = commands,
-            noCommandRecognized = { ii, hh -> },
+            noCommandRecognized = noCommandRecognized ?: { message, bot -> },
             callbacks = callbacks,
             saveLog = logs
         )

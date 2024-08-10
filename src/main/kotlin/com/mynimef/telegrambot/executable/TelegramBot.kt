@@ -14,6 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException
 import org.telegram.telegrambots.meta.generics.TelegramClient
@@ -46,8 +47,11 @@ internal class TelegramBot(token: String): IBot {
 
     override fun sendMessage(chatId: String, message: BotMessage): Int? {
         val sendMessage = SendMessage(chatId, message.text)
-        if (message.buttonLines.isNotEmpty()) {
-            sendMessage.replyMarkup = setButtons(message.buttonLines)
+        if (message.inlineButtonLines.isNotEmpty()) {
+            sendMessage.replyMarkup = setButtons(message.inlineButtonLines)
+        }
+        if (message.keyboardButtonLines.isNotEmpty()) {
+            sendMessage.replyMarkup = setButtons(message.keyboardButtonLines)
         }
         return sendMessage(sendMessage)
     }
@@ -79,8 +83,8 @@ internal class TelegramBot(token: String): IBot {
         editMessage.chatId = chatId
         editMessage.messageId = messageId
 
-        if (message.buttonLines.isNotEmpty()) {
-            editMessage.replyMarkup = setButtons(message.buttonLines)
+        if (message.inlineButtonLines.isNotEmpty()) {
+            editMessage.replyMarkup = setButtons(message.inlineButtonLines)
         }
         sendMessage(editMessage)
     }
@@ -97,33 +101,36 @@ internal class TelegramBot(token: String): IBot {
 }
 
 
-private fun setButtons(buttonsLines: List<List<IButton>>): InlineKeyboardMarkup {
-    val keyboardButtons: MutableList<InlineKeyboardRow> = ArrayList()
+private fun setButtons(buttonsLines: List<List<ButtonInline>>): InlineKeyboardMarkup {
+    val messageButtons: MutableList<InlineKeyboardRow> = mutableListOf()
     buttonsLines.forEach { buttonLine ->
-        val keyboardButtonsRow = InlineKeyboardRow()
+        val messageButtonsRow = InlineKeyboardRow()
         buttonLine.forEach { button ->
             val inlineKeyboardButton = InlineKeyboardButton(button.label)
             when (button) {
-                is ButtonCallback -> inlineKeyboardButton.callbackData = button.callbackId
-                is ButtonURL -> inlineKeyboardButton.url = button.url
+                is ButtonInline.Callback -> inlineKeyboardButton.callbackData = button.callbackId
+                is ButtonInline.URL -> inlineKeyboardButton.url = button.url
             }
-            keyboardButtonsRow.add(inlineKeyboardButton)
+            messageButtonsRow.add(inlineKeyboardButton)
         }
-        keyboardButtons.add(keyboardButtonsRow)
+        messageButtons.add(messageButtonsRow)
     }
-    return InlineKeyboardMarkup(keyboardButtons)
+    return InlineKeyboardMarkup(messageButtons)
 }
 
 
-private fun setKeyboard(buttons: Array<ButtonKeyboardLine>): ReplyKeyboardMarkup {
-    val keyboardButtons: MutableList<KeyboardRow> = ArrayList()
-
-    for (line in buttons) {
-        val keyboardRow = KeyboardRow()
-        for (text in line.line) {
-            keyboardRow.add(text)
-            keyboardButtons.add(keyboardRow)
+private fun setButtons(buttonsLines: List<List<ButtonKeyboard>>): ReplyKeyboardMarkup {
+    val keyboardButtons: MutableList<KeyboardRow> = mutableListOf()
+    buttonsLines.forEach { buttonLine ->
+        val keyboardButtonsRow = KeyboardRow()
+        buttonLine.forEach { button ->
+            val keyboardButton = KeyboardButton(button.label)
+            when (button) {
+                is ButtonKeyboard.AskPhone -> keyboardButton.requestContact = true
+            }
+            keyboardButtonsRow.add(keyboardButton)
         }
+        keyboardButtons.add(keyboardButtonsRow)
     }
 
     return ReplyKeyboardMarkup(keyboardButtons).apply {
