@@ -1,6 +1,7 @@
 package com.mynimef.telegrambot.executable
 
 import com.mynimef.telegrambot.IBot
+import com.mynimef.telegrambot.containers.AddOn
 import com.mynimef.telegrambot.containers.BotMessage
 import com.mynimef.telegrambot.containers.ButtonInline
 import com.mynimef.telegrambot.containers.ButtonKeyboard
@@ -64,18 +65,18 @@ internal class TelegramBot(token: String): IBot {
                 val doc = SendDocument(chatId, InputFile(message.file))
                 doc.caption = message.description
                 message.addOn?.let { when (it) {
-                    is BotMessage.AddOn.ButtonInlineContainer -> doc.replyMarkup = setButtons(it.inlineButtonLines)
-                    is BotMessage.AddOn.ButtonKeyboardContainer -> doc.replyMarkup = setButtons(it.keyboardButtonLines)
-                    is BotMessage.AddOn.ButtonKeyboardRemover -> doc.replyMarkup = ReplyKeyboardRemove(true)
+                    is AddOn.ButtonInlineContainer -> doc.replyMarkup = setButtons(it.inlineButtonLines)
+                    is AddOn.ButtonKeyboardContainer -> doc.replyMarkup = setButtons(it.keyboardButtonLines)
+                    is AddOn.ButtonKeyboardRemover -> doc.replyMarkup = ReplyKeyboardRemove(true)
                 }}
                 return sendDoc(doc)
             }
             is BotMessage.Text -> {
                 val sendMessage = SendMessage(chatId, message.text)
                 message.addOn?.let { when (it) {
-                    is BotMessage.AddOn.ButtonInlineContainer -> sendMessage.replyMarkup = setButtons(it.inlineButtonLines)
-                    is BotMessage.AddOn.ButtonKeyboardContainer -> sendMessage.replyMarkup = setButtons(it.keyboardButtonLines)
-                    is BotMessage.AddOn.ButtonKeyboardRemover -> sendMessage.replyMarkup = ReplyKeyboardRemove(true)
+                    is AddOn.ButtonInlineContainer -> sendMessage.replyMarkup = setButtons(it.inlineButtonLines)
+                    is AddOn.ButtonKeyboardContainer -> sendMessage.replyMarkup = setButtons(it.keyboardButtonLines)
+                    is AddOn.ButtonKeyboardRemover -> sendMessage.replyMarkup = ReplyKeyboardRemove(true)
                 }}
                 return sendMessage(sendMessage)
             }
@@ -104,7 +105,7 @@ internal class TelegramBot(token: String): IBot {
                 editMessage.chatId = chatId
                 editMessage.messageId = messageId
                 message.addOn?.let { when (it) {
-                    is BotMessage.AddOn.ButtonInlineContainer -> editMessage.replyMarkup = setButtons(it.inlineButtonLines)
+                    is AddOn.ButtonInlineContainer -> editMessage.replyMarkup = setButtons(it.inlineButtonLines)
                     else -> {}
                 }}
                 sendEditMedia(editMessage)
@@ -114,7 +115,7 @@ internal class TelegramBot(token: String): IBot {
                 editMessage.chatId = chatId
                 editMessage.messageId = messageId
                 message.addOn?.let { when (it) {
-                    is BotMessage.AddOn.ButtonInlineContainer -> editMessage.replyMarkup = setButtons(it.inlineButtonLines)
+                    is AddOn.ButtonInlineContainer -> editMessage.replyMarkup = setButtons(it.inlineButtonLines)
                     else -> {}
                 }}
                 sendMessage(editMessage)

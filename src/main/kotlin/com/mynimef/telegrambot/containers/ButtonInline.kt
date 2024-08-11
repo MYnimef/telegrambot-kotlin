@@ -21,6 +21,12 @@ sealed interface ButtonInline {
 
     ): ButtonInline
 
+    interface Container {
+
+        fun addButtonsLine(vararg buttons: ButtonInline): Container
+
+        fun addButtonsLines(lines: List<List<ButtonInline>>): Container
+
+    }
+
 }
-
-
