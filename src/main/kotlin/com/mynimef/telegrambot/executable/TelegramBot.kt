@@ -1,10 +1,7 @@
 package com.mynimef.telegrambot.executable
 
 import com.mynimef.telegrambot.IBot
-import com.mynimef.telegrambot.containers.BotMessage
-import com.mynimef.telegrambot.containers.ButtonInline
-import com.mynimef.telegrambot.containers.ButtonKeyboard
-import com.mynimef.telegrambot.containers.Configurable
+import com.mynimef.telegrambot.containers.*
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument
@@ -59,7 +56,7 @@ internal class TelegramBot(token: String): IBot {
         }
     }
 
-    override fun sendMessage(chatId: String, message: BotMessage): Int? {
+    override fun sendMessage(chatId: String, message: BotSendable): Int? {
         when (message) {
             is BotMessage.File -> {
                 val doc = SendDocument(chatId, InputFile(message.file))
@@ -98,7 +95,7 @@ internal class TelegramBot(token: String): IBot {
         sendMessage(editMessage)
     }
 
-    override fun editMessage(chatId: String, messageId: Int, message: BotMessage) {
+    override fun editMessage(chatId: String, messageId: Int, message: BotSendable) {
         when (message) {
             is BotMessage.File -> {
                 val editMessage = EditMessageMedia(InputMediaDocument(message.file, ""))

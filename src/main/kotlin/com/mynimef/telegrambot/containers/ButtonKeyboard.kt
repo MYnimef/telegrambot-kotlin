@@ -15,7 +15,7 @@ sealed interface ButtonKeyboard {
      */
     data class AskPhone(override val label: String): ButtonKeyboard
 
-    sealed interface Container {
+    sealed interface Container: BotSendable {
 
         fun addButtonsLine(vararg buttons: ButtonKeyboard): Container
 

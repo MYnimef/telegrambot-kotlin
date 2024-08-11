@@ -4,7 +4,7 @@ package com.mynimef.telegrambot.containers
 /**
  * BotMessage to send to user
  */
-sealed interface BotMessage {
+sealed interface BotMessage: BotSendable {
 
     /**
      * Simple text message

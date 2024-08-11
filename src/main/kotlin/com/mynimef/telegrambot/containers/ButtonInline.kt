@@ -21,7 +21,7 @@ sealed interface ButtonInline {
 
     ): ButtonInline
 
-    sealed interface Container {
+    sealed interface Container: BotSendable {
 
         fun addButtonsLine(vararg buttons: ButtonInline): Container
 
