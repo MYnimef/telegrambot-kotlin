@@ -1,6 +1,8 @@
 package com.mynimef.telegrambot
 
 import com.mynimef.telegrambot.containers.BotMessage
+import com.mynimef.telegrambot.containers.ButtonInline
+import com.mynimef.telegrambot.containers.ButtonKeyboard
 
 interface IBot {
 
@@ -9,6 +11,14 @@ interface IBot {
     fun sendMessage(chatId: String, message: BotMessage): Int?
 
     fun sendMessage(chatId: String, message: BotMessage.Configurable): Int? {
+        return sendMessage(chatId = chatId, message = message as BotMessage)
+    }
+
+    fun sendMessage(chatId: String, message: ButtonInline.Container): Int? {
+        return sendMessage(chatId = chatId, message = message as BotMessage)
+    }
+
+    fun sendMessage(chatId: String, message: ButtonKeyboard.Container): Int? {
         return sendMessage(chatId = chatId, message = message as BotMessage)
     }
 

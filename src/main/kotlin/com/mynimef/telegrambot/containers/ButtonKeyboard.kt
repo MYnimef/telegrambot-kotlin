@@ -15,7 +15,7 @@ sealed interface ButtonKeyboard {
      */
     data class AskPhone(override val label: String): ButtonKeyboard
 
-    interface Container {
+    sealed interface Container {
 
         fun addButtonsLine(vararg buttons: ButtonKeyboard): Container
 
