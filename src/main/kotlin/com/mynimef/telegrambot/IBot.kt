@@ -10,10 +10,6 @@ interface IBot {
 
     fun sendMessage(chatId: String, message: BotMessage): Int?
 
-    fun sendMessage(chatId: String, message: BotMessage.Configurable): Int? {
-        return sendMessage(chatId = chatId, message = message as BotMessage)
-    }
-
     fun sendMessage(chatId: String, message: ButtonInline.Container): Int? {
         return sendMessage(chatId = chatId, message = message as BotMessage)
     }

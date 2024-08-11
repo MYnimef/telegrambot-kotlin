@@ -27,64 +27,62 @@ sealed interface BotMessage {
         val description: String? = null,
     ): BotMessage, Configurable()
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sealed class Configurable: ButtonInline.Container, ButtonKeyboard.Container {
-
-        internal var addOn: AddOn? = null
-
-        override fun addButtonsLine(vararg buttons: ButtonInline): ButtonInline.Container {
-            if (addOn == null) {
-                addOn = AddOn.ButtonInlineContainer()
-            }
-            (addOn!! as AddOn.ButtonInlineContainer).inlineButtonLines.add(buttons.asList())
-            return this
-        }
-
-        override fun addButtonsLines(lines: List<List<ButtonInline>>): ButtonInline.Container {
-            if (addOn == null) {
-                addOn = AddOn.ButtonInlineContainer()
-            }
-            (addOn!! as AddOn.ButtonInlineContainer).inlineButtonLines.addAll(lines)
-            return this
-        }
-
-        override fun addButtonsLine(vararg buttons: ButtonKeyboard): ButtonKeyboard.Container {
-            if (addOn == null) {
-                addOn = AddOn.ButtonKeyboardContainer()
-            }
-            (addOn!! as AddOn.ButtonKeyboardContainer).keyboardButtonLines.add(buttons.asList())
-            return this
-        }
-
-        override fun addButtonsLines(lines: List<List<ButtonKeyboard>>): ButtonKeyboard.Container {
-            if (addOn == null) {
-                addOn = AddOn.ButtonKeyboardContainer()
-            }
-            (addOn!! as AddOn.ButtonKeyboardContainer).keyboardButtonLines.addAll(lines)
-            return this
-        }
-
-        fun addKeyboardButtonRemover(): BotMessage {
-            addOn = AddOn.ButtonKeyboardRemover
-            return this as BotMessage
-        }
-
-    }
-
 }
 
 
-internal sealed interface AddOn {
+sealed class Configurable: ButtonInline.Container, ButtonKeyboard.Container {
 
-    class ButtonInlineContainer internal constructor(
-        internal val inlineButtonLines: MutableList<List<ButtonInline>> = mutableListOf()
-    ): AddOn
+    internal var addOn: AddOn? = null
 
-    class ButtonKeyboardContainer internal constructor(
-        internal val keyboardButtonLines: MutableList<List<ButtonKeyboard>> = mutableListOf()
-    ): AddOn
+    override fun addButtonsLine(vararg buttons: ButtonInline): ButtonInline.Container {
+        if (addOn == null) {
+            addOn = AddOn.ButtonInlineContainer()
+        }
+        (addOn!! as AddOn.ButtonInlineContainer).inlineButtonLines.add(buttons.asList())
+        return this
+    }
 
-    object ButtonKeyboardRemover: AddOn
+    override fun addButtonsLines(lines: List<List<ButtonInline>>): ButtonInline.Container {
+        if (addOn == null) {
+            addOn = AddOn.ButtonInlineContainer()
+        }
+        (addOn!! as AddOn.ButtonInlineContainer).inlineButtonLines.addAll(lines)
+        return this
+    }
+
+    override fun addButtonsLine(vararg buttons: ButtonKeyboard): ButtonKeyboard.Container {
+        if (addOn == null) {
+            addOn = AddOn.ButtonKeyboardContainer()
+        }
+        (addOn!! as AddOn.ButtonKeyboardContainer).keyboardButtonLines.add(buttons.asList())
+        return this
+    }
+
+    override fun addButtonsLines(lines: List<List<ButtonKeyboard>>): ButtonKeyboard.Container {
+        if (addOn == null) {
+            addOn = AddOn.ButtonKeyboardContainer()
+        }
+        (addOn!! as AddOn.ButtonKeyboardContainer).keyboardButtonLines.addAll(lines)
+        return this
+    }
+
+    fun addKeyboardButtonRemover(): BotMessage {
+        addOn = AddOn.ButtonKeyboardRemover
+        return this as BotMessage
+    }
+
+    internal sealed interface AddOn {
+
+        class ButtonInlineContainer internal constructor(
+            internal val inlineButtonLines: MutableList<List<ButtonInline>> = mutableListOf()
+        ): AddOn
+
+        class ButtonKeyboardContainer internal constructor(
+            internal val keyboardButtonLines: MutableList<List<ButtonKeyboard>> = mutableListOf()
+        ): AddOn
+
+        object ButtonKeyboardRemover: AddOn
+
+    }
 
 }
