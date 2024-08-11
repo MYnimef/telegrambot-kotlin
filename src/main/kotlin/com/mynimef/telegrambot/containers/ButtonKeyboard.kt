@@ -15,4 +15,15 @@ sealed interface ButtonKeyboard {
      */
     data class AskPhone(override val label: String): ButtonKeyboard
 
+    /**
+     * Container with inline buttons (attached to message)
+     */
+    interface Container {
+
+        fun addButtonsLine(vararg buttons: ButtonKeyboard): Container
+
+        fun addButtonsLines(lines: List<List<ButtonKeyboard>>): Container
+
+    }
+
 }

@@ -2,38 +2,42 @@ package com.mynimef.telegrambot.containers
 
 
 /**
- * Simple text message
- */
-interface InlineButtonsContainer {
-    fun addButtonsLine(vararg buttons: ButtonInline): InlineButtonsContainer
-}
-
-/**
- * Simple text message
- */
-interface KeyboardButtonsContainer {
-    fun addButtonsLine(vararg buttons: ButtonKeyboard): KeyboardButtonsContainer
-}
-
-/**
  * BotMessage to send to user
  */
-sealed class BotMessage(
+sealed class BotMessage: ButtonInline.Container, ButtonKeyboard.Container {
 
-    messageButtonLines: List<List<ButtonInline>> = emptyList(),
+    private val _inlineButtonLines: MutableList<List<ButtonInline>> = mutableListOf()
+    internal val inlineButtonLines by lazy { _inlineButtonLines.toList() }
 
-    keyboardButtonLines: List<List<ButtonKeyboard>> = emptyList()
+    override fun addButtonsLine(vararg buttons: ButtonInline): ButtonInline.Container {
+        _inlineButtonLines.add(buttons.toList())
+        return this
+    }
 
-): InlineButtonsContainer, KeyboardButtonsContainer {
+    override fun addButtonsLines(lines: List<List<ButtonInline>>): ButtonInline.Container {
+        _inlineButtonLines.addAll(lines)
+        return this
+    }
+
+    private val _keyboardButtonLines: MutableList<List<ButtonKeyboard>> = mutableListOf()
+    internal val keyboardButtonLines by lazy { _keyboardButtonLines.toList() }
+
+    override fun addButtonsLine(vararg buttons: ButtonKeyboard): ButtonKeyboard.Container {
+        _keyboardButtonLines.add(buttons.toList())
+        return this
+    }
+
+    override fun addButtonsLines(lines: List<List<ButtonKeyboard>>): ButtonKeyboard.Container {
+        _keyboardButtonLines.addAll(lines)
+        return this
+    }
 
     /**
      * Simple text message
      */
-    class Text(
+    class Text @Throws(IllegalArgumentException::class) constructor(
         val text: String,
-        messageButtonLines: List<List<ButtonInline>> = emptyList(),
-        keyboardButtonLines: List<List<ButtonKeyboard>> = emptyList(),
-    ): BotMessage(messageButtonLines, keyboardButtonLines) {
+    ): BotMessage() {
         init {
             if (text.isBlank()) {
                 throw IllegalArgumentException("BotMessage.Text text property cannot be empty or blank")
@@ -45,35 +49,8 @@ sealed class BotMessage(
      * Message with file
      */
     class File(
-
-        /**
-         * File to attach to message
-         */
         val file: java.io.File,
-
-        /**
-         * Description of a file
-         */
         val description: String? = null,
-
-        messageButtonLines: List<List<ButtonInline>> = emptyList(),
-        keyboardButtonLines: List<List<ButtonKeyboard>> = emptyList(),
-    ): BotMessage(messageButtonLines, keyboardButtonLines)
-
-    private val _inlineButtonLines = messageButtonLines.toMutableList()
-    internal val inlineButtonLines by lazy { _inlineButtonLines.toList() }
-
-    override fun addButtonsLine(vararg buttons: ButtonInline): InlineButtonsContainer {
-        _inlineButtonLines.add(buttons.toList())
-        return this
-    }
-
-    private val _keyboardButtonLines = keyboardButtonLines.toMutableList()
-    internal val keyboardButtonLines by lazy { _keyboardButtonLines.toList() }
-
-    override fun addButtonsLine(vararg buttons: ButtonKeyboard): KeyboardButtonsContainer {
-        _keyboardButtonLines.add(buttons.toList())
-        return this
-    }
+    ): BotMessage()
 
 }
