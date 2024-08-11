@@ -16,7 +16,7 @@ typealias ActionCallback = (userCallback: UserUpdate.Callback, bot: IBot) -> Uni
 internal class BotConsumer(
     private val telegramBot: TelegramBot,
     private val commandsActions: Map<String, ActionMessage>,
-    private val noCommandRecognizedAction: ActionMessage,
+    private val messageAction: ActionMessage,
     private val contactAction: ActionContact,
     private val callbacksActions: Map<String, ActionCallback>,
 ): LongPollingSingleThreadUpdateConsumer {
@@ -43,7 +43,7 @@ internal class BotConsumer(
             firstName = message.chat.firstName,
             lastName = message.chat.lastName
         )
-        commandsActions[message.text]?.invoke(userMessage, telegramBot) ?: noCommandRecognizedAction(userMessage, telegramBot)
+        commandsActions[message.text]?.invoke(userMessage, telegramBot) ?: messageAction(userMessage, telegramBot)
     }
 
     private fun onContactReceived(message: Message) {

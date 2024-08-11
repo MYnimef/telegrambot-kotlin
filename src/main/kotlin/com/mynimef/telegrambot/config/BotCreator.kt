@@ -78,7 +78,7 @@ class BotCreator(
         val botConsumer = BotConsumer(
             telegramBot = bot,
             commandsActions = commandsActions,
-            noCommandRecognizedAction = messageAction ?: { message, bot -> },
+            messageAction = messageAction ?: { message, bot -> },
             contactAction = contactAction ?: { contact, bot -> },
             callbacksActions = callbacksActions,
         )
