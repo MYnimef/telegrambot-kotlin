@@ -16,6 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.media.InputMediaDocument
 import org.telegram.telegrambots.meta.api.objects.message.Message
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton
@@ -62,20 +63,20 @@ internal class TelegramBot(token: String): IBot {
             is BotMessage.File -> {
                 val doc = SendDocument(chatId, InputFile(message.file))
                 doc.caption = message.description
-                if (message.inlineButtonLines.isNotEmpty()) {
-                    doc.replyMarkup = setButtons(message.inlineButtonLines)
-                } else if (message.keyboardButtonLines.isNotEmpty()) {
-                    doc.replyMarkup = setButtons(message.keyboardButtonLines)
-                }
+                message.addOn?.let { when (it) {
+                    is BotMessage.AddOn.ButtonInlineContainer -> doc.replyMarkup = setButtons(it.inlineButtonLines)
+                    is BotMessage.AddOn.ButtonKeyboardContainer -> doc.replyMarkup = setButtons(it.keyboardButtonLines)
+                    BotMessage.AddOn.ButtonKeyboardRemover -> doc.replyMarkup = ReplyKeyboardRemove(true)
+                }}
                 return sendDoc(doc)
             }
             is BotMessage.Text -> {
                 val sendMessage = SendMessage(chatId, message.text)
-                if (message.inlineButtonLines.isNotEmpty()) {
-                    sendMessage.replyMarkup = setButtons(message.inlineButtonLines)
-                } else if (message.keyboardButtonLines.isNotEmpty()) {
-                    sendMessage.replyMarkup = setButtons(message.keyboardButtonLines)
-                }
+                message.addOn?.let { when (it) {
+                    is BotMessage.AddOn.ButtonInlineContainer -> sendMessage.replyMarkup = setButtons(it.inlineButtonLines)
+                    is BotMessage.AddOn.ButtonKeyboardContainer -> sendMessage.replyMarkup = setButtons(it.keyboardButtonLines)
+                    BotMessage.AddOn.ButtonKeyboardRemover -> sendMessage.replyMarkup = ReplyKeyboardRemove(true)
+                }}
                 return sendMessage(sendMessage)
             }
         }
@@ -102,18 +103,20 @@ internal class TelegramBot(token: String): IBot {
                 val editMessage = EditMessageMedia(InputMediaDocument(message.file, ""))
                 editMessage.chatId = chatId
                 editMessage.messageId = messageId
-                if (message.inlineButtonLines.isNotEmpty()) {
-                    editMessage.replyMarkup = setButtons(message.inlineButtonLines)
-                }
+                message.addOn?.let { when (it) {
+                    is BotMessage.AddOn.ButtonInlineContainer -> editMessage.replyMarkup = setButtons(it.inlineButtonLines)
+                    else -> {}
+                }}
                 sendEditMedia(editMessage)
             }
             is BotMessage.Text -> {
                 val editMessage = EditMessageText(message.text)
                 editMessage.chatId = chatId
                 editMessage.messageId = messageId
-                if (message.inlineButtonLines.isNotEmpty()) {
-                    editMessage.replyMarkup = setButtons(message.inlineButtonLines)
-                }
+                message.addOn?.let { when (it) {
+                    is BotMessage.AddOn.ButtonInlineContainer -> editMessage.replyMarkup = setButtons(it.inlineButtonLines)
+                    else -> {}
+                }}
                 sendMessage(editMessage)
             }
         }

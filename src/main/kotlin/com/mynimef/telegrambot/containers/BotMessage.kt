@@ -4,33 +4,7 @@ package com.mynimef.telegrambot.containers
 /**
  * BotMessage to send to user
  */
-sealed class BotMessage: ButtonInline.Container, ButtonKeyboard.Container {
-
-    private val _inlineButtonLines: MutableList<List<ButtonInline>> = mutableListOf()
-    internal val inlineButtonLines by lazy { _inlineButtonLines.toList() }
-
-    override fun addButtonsLine(vararg buttons: ButtonInline): ButtonInline.Container {
-        _inlineButtonLines.add(buttons.toList())
-        return this
-    }
-
-    override fun addButtonsLines(lines: List<List<ButtonInline>>): ButtonInline.Container {
-        _inlineButtonLines.addAll(lines)
-        return this
-    }
-
-    private val _keyboardButtonLines: MutableList<List<ButtonKeyboard>> = mutableListOf()
-    internal val keyboardButtonLines by lazy { _keyboardButtonLines.toList() }
-
-    override fun addButtonsLine(vararg buttons: ButtonKeyboard): ButtonKeyboard.Container {
-        _keyboardButtonLines.add(buttons.toList())
-        return this
-    }
-
-    override fun addButtonsLines(lines: List<List<ButtonKeyboard>>): ButtonKeyboard.Container {
-        _keyboardButtonLines.addAll(lines)
-        return this
-    }
+sealed class BotMessage {
 
     /**
      * Simple text message
@@ -52,5 +26,61 @@ sealed class BotMessage: ButtonInline.Container, ButtonKeyboard.Container {
         val file: java.io.File,
         val description: String? = null,
     ): BotMessage()
+
+    internal var addOn: AddOn? = null
+
+    fun addInlineButtonsSupport(): AddOn.ButtonInlineContainer {
+        val container = AddOn.ButtonInlineContainer()
+        addOn = container
+        return container
+    }
+
+    fun addKeyboardButtonsSupport(): AddOn.ButtonKeyboardContainer {
+        val container = AddOn.ButtonKeyboardContainer()
+        addOn = container
+        return container
+    }
+
+    fun addKeyboardButtonRemover() {
+        addOn = AddOn.ButtonKeyboardRemover
+    }
+
+    sealed interface AddOn {
+
+        data class ButtonInlineContainer(
+            internal val inlineButtonLines: MutableList<List<ButtonInline>> = mutableListOf()
+        ): AddOn {
+
+            fun addButtonsLine(vararg buttons: ButtonInline): ButtonInlineContainer {
+                inlineButtonLines.add(buttons.toList())
+                return this
+            }
+
+            fun addButtonsLines(lines: List<List<ButtonInline>>): ButtonInlineContainer {
+                inlineButtonLines.addAll(lines)
+                return this
+            }
+
+        }
+
+        data class ButtonKeyboardContainer(
+            internal val keyboardButtonLines: MutableList<List<ButtonKeyboard>> = mutableListOf()
+        ): AddOn {
+
+            fun addButtonsLine(vararg buttons: ButtonKeyboard): ButtonKeyboardContainer {
+                keyboardButtonLines.add(buttons.toList())
+                return this
+            }
+
+            fun addButtonsLines(lines: List<List<ButtonKeyboard>>): ButtonKeyboardContainer {
+                keyboardButtonLines.addAll(lines)
+                return this
+            }
+
+        }
+
+        data object ButtonKeyboardRemover: AddOn
+
+    }
 
 }
