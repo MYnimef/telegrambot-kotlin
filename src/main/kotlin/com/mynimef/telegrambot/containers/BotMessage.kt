@@ -1,5 +1,7 @@
 package com.mynimef.telegrambot.containers
 
+import java.lang.ref.WeakReference
+
 
 /**
  * BotMessage to send to user
@@ -27,29 +29,34 @@ sealed class BotMessage {
         val description: String? = null,
     ): BotMessage()
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     internal var addOn: AddOn? = null
 
     fun addInlineButtonsSupport(): AddOn.ButtonInlineContainer {
-        val container = AddOn.ButtonInlineContainer()
+        val container = AddOn.ButtonInlineContainer(this)
         addOn = container
         return container
     }
 
     fun addKeyboardButtonsSupport(): AddOn.ButtonKeyboardContainer {
-        val container = AddOn.ButtonKeyboardContainer()
+        val container = AddOn.ButtonKeyboardContainer(this)
         addOn = container
         return container
     }
 
     fun addKeyboardButtonRemover() {
-        addOn = AddOn.ButtonKeyboardRemover
+        addOn = AddOn.ButtonKeyboardRemover(this)
     }
 
-    sealed interface AddOn {
+    sealed class AddOn(message: BotMessage) {
 
-        data class ButtonInlineContainer(
+        internal val messageRef = WeakReference(message)
+
+        class ButtonInlineContainer internal constructor(
+            message: BotMessage,
             internal val inlineButtonLines: MutableList<List<ButtonInline>> = mutableListOf()
-        ): AddOn {
+        ): AddOn(message) {
 
             fun addButtonsLine(vararg buttons: ButtonInline): ButtonInlineContainer {
                 inlineButtonLines.add(buttons.toList())
@@ -63,9 +70,10 @@ sealed class BotMessage {
 
         }
 
-        data class ButtonKeyboardContainer(
+        class ButtonKeyboardContainer internal constructor(
+            message: BotMessage,
             internal val keyboardButtonLines: MutableList<List<ButtonKeyboard>> = mutableListOf()
-        ): AddOn {
+        ): AddOn(message) {
 
             fun addButtonsLine(vararg buttons: ButtonKeyboard): ButtonKeyboardContainer {
                 keyboardButtonLines.add(buttons.toList())
@@ -79,7 +87,9 @@ sealed class BotMessage {
 
         }
 
-        data object ButtonKeyboardRemover: AddOn
+        class ButtonKeyboardRemover internal constructor(
+            message: BotMessage
+        ): AddOn(message)
 
     }
 

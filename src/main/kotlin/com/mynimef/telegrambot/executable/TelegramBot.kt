@@ -66,7 +66,7 @@ internal class TelegramBot(token: String): IBot {
                 message.addOn?.let { when (it) {
                     is BotMessage.AddOn.ButtonInlineContainer -> doc.replyMarkup = setButtons(it.inlineButtonLines)
                     is BotMessage.AddOn.ButtonKeyboardContainer -> doc.replyMarkup = setButtons(it.keyboardButtonLines)
-                    BotMessage.AddOn.ButtonKeyboardRemover -> doc.replyMarkup = ReplyKeyboardRemove(true)
+                    is BotMessage.AddOn.ButtonKeyboardRemover -> doc.replyMarkup = ReplyKeyboardRemove(true)
                 }}
                 return sendDoc(doc)
             }
@@ -75,7 +75,7 @@ internal class TelegramBot(token: String): IBot {
                 message.addOn?.let { when (it) {
                     is BotMessage.AddOn.ButtonInlineContainer -> sendMessage.replyMarkup = setButtons(it.inlineButtonLines)
                     is BotMessage.AddOn.ButtonKeyboardContainer -> sendMessage.replyMarkup = setButtons(it.keyboardButtonLines)
-                    BotMessage.AddOn.ButtonKeyboardRemover -> sendMessage.replyMarkup = ReplyKeyboardRemove(true)
+                    is BotMessage.AddOn.ButtonKeyboardRemover -> sendMessage.replyMarkup = ReplyKeyboardRemove(true)
                 }}
                 return sendMessage(sendMessage)
             }
