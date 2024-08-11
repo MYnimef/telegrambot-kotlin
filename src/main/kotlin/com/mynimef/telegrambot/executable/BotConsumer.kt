@@ -1,18 +1,16 @@
 package com.mynimef.telegrambot.executable
 
 import com.mynimef.telegrambot.IBot
-import com.mynimef.telegrambot.containers.UserCallback
-import com.mynimef.telegrambot.containers.UserContact
-import com.mynimef.telegrambot.containers.UserMessage
+import com.mynimef.telegrambot.containers.UserUpdate
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery
 import org.telegram.telegrambots.meta.api.objects.Update
 import org.telegram.telegrambots.meta.api.objects.message.Message
 
 
-typealias ActionMessage = (userMessage: UserMessage, bot: IBot) -> Unit
-typealias ActionContact = (userContact: UserContact, bot: IBot) -> Unit
-typealias ActionCallback = (userCallback: UserCallback, bot: IBot) -> Unit
+typealias ActionMessage = (userMessage: UserUpdate.Message, bot: IBot) -> Unit
+typealias ActionContact = (userContact: UserUpdate.Contact, bot: IBot) -> Unit
+typealias ActionCallback = (userCallback: UserUpdate.Callback, bot: IBot) -> Unit
 
 
 internal class BotConsumer(
@@ -37,7 +35,7 @@ internal class BotConsumer(
     }
 
     private fun onMessageReceived(message: Message) {
-        val userMessage = UserMessage(
+        val userMessage = UserUpdate.Message(
             text = message.text,
             userId = message.chatId.toString(),
             messageId = message.messageId,
@@ -50,8 +48,8 @@ internal class BotConsumer(
 
     private fun onContactReceived(message: Message) {
         val contact = message.contact
-        val userContact = UserContact(
-            contactInfo = UserContact.ContactInfo(
+        val userContact = UserUpdate.Contact(
+            contactInfo = UserUpdate.Contact.ContactInfo(
                 phoneNumber = contact.phoneNumber,
                 firstName = contact.firstName,
                 lastName = contact.lastName,
@@ -68,7 +66,7 @@ internal class BotConsumer(
     private fun onCallbackReceived(query: CallbackQuery) {
         val callback = callbacksActions[query.data]
         callback?.invoke(
-            UserCallback(
+            UserUpdate.Callback(
                 callbackId = query.data,
                 userId = query.message.chatId.toString(),
                 originalMessageId = query.message.messageId,

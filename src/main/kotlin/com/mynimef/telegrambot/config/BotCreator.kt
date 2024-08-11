@@ -1,10 +1,7 @@
 package com.mynimef.telegrambot.config
 
-import com.mynimef.telegrambot.BotCallback
-import com.mynimef.telegrambot.BotCommand
 import com.mynimef.telegrambot.IBot
-import com.mynimef.telegrambot.containers.UserCallback
-import com.mynimef.telegrambot.containers.UserMessage
+import com.mynimef.telegrambot.containers.UserUpdate
 import com.mynimef.telegrambot.executable.*
 import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication
 
@@ -26,7 +23,7 @@ class BotCreator(
             val annotation = method.annotations.find { it is BotCommand } as? BotCommand ?: return@forEach
             if (
                 method.parameters.size == 2 &&
-                method.parameters[0].type == UserMessage::class.java &&
+                method.parameters[0].type == UserUpdate.Message::class.java &&
                 method.parameters[1].type == IBot::class.java
             ) {
                 val action: ActionMessage = { userCommand, bot ->
@@ -51,7 +48,7 @@ class BotCreator(
             val annotation = method.annotations.find { it is BotCallback } as? BotCallback ?: return@forEach
             if (
                 method.parameters.size == 2 &&
-                method.parameters[0].type == UserCallback::class.java &&
+                method.parameters[0].type == UserUpdate.Callback::class.java &&
                 method.parameters[1].type == IBot::class.java
             ) {
                 if (callbacksActions.containsKey(annotation.callback)) {

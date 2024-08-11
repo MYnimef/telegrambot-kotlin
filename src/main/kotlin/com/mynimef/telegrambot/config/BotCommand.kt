@@ -1,4 +1,4 @@
-package com.mynimef.telegrambot
+package com.mynimef.telegrambot.config
 
 
 @Target(AnnotationTarget.FUNCTION)
