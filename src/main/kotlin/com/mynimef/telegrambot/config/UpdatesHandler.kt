@@ -17,7 +17,7 @@ abstract class UpdatesHandler {
 
     protected fun addCommand(command: String, reply: String) {
         _commandsActions[command] = { userCommand, bot ->
-            bot.sendMessage(userCommand.userId, reply)
+            bot.sendMessage(userCommand.chatId, reply)
         }
     }
 

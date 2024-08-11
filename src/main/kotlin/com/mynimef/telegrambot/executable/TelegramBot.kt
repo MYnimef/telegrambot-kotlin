@@ -57,10 +57,10 @@ internal class TelegramBot(token: String): IBot {
         }
     }
 
-    override fun sendMessage(userId: String, message: BotMessage): Int? {
+    override fun sendMessage(chatId: String, message: BotMessage): Int? {
         when (message) {
             is BotMessage.File -> {
-                val doc = SendDocument(userId, InputFile(message.file))
+                val doc = SendDocument(chatId, InputFile(message.file))
                 doc.caption = message.description
                 if (message.inlineButtonLines.isNotEmpty()) {
                     doc.replyMarkup = setButtons(message.inlineButtonLines)
@@ -70,7 +70,7 @@ internal class TelegramBot(token: String): IBot {
                 return sendDoc(doc)
             }
             is BotMessage.Text -> {
-                val sendMessage = SendMessage(userId, message.text)
+                val sendMessage = SendMessage(chatId, message.text)
                 if (message.inlineButtonLines.isNotEmpty()) {
                     sendMessage.replyMarkup = setButtons(message.inlineButtonLines)
                 } else if (message.keyboardButtonLines.isNotEmpty()) {
@@ -81,26 +81,26 @@ internal class TelegramBot(token: String): IBot {
         }
     }
 
-    override fun sendMessage(userId: String, text: String): Int? {
+    override fun sendMessage(chatId: String, text: String): Int? {
         val message = SendMessage(
-            userId,
+            chatId,
             text
         )
         return sendMessage(message)
     }
 
-    override fun editMessage(userId: String, messageId: Int, text: String) {
+    override fun editMessage(chatId: String, messageId: Int, text: String) {
         val editMessage = EditMessageText(text)
-        editMessage.chatId = userId
+        editMessage.chatId = chatId
         editMessage.messageId = messageId
         sendMessage(editMessage)
     }
 
-    override fun editMessage(userId: String, messageId: Int, message: BotMessage) {
+    override fun editMessage(chatId: String, messageId: Int, message: BotMessage) {
         when (message) {
             is BotMessage.File -> {
                 val editMessage = EditMessageMedia(InputMediaDocument(message.file, ""))
-                editMessage.chatId = userId
+                editMessage.chatId = chatId
                 editMessage.messageId = messageId
                 if (message.inlineButtonLines.isNotEmpty()) {
                     editMessage.replyMarkup = setButtons(message.inlineButtonLines)
@@ -109,7 +109,7 @@ internal class TelegramBot(token: String): IBot {
             }
             is BotMessage.Text -> {
                 val editMessage = EditMessageText(message.text)
-                editMessage.chatId = userId
+                editMessage.chatId = chatId
                 editMessage.messageId = messageId
                 if (message.inlineButtonLines.isNotEmpty()) {
                     editMessage.replyMarkup = setButtons(message.inlineButtonLines)
@@ -119,8 +119,8 @@ internal class TelegramBot(token: String): IBot {
         }
     }
 
-    override fun deleteMessage(userId: String, messageId: Int) {
-        val delete = DeleteMessage(userId, messageId)
+    override fun deleteMessage(chatId: String, messageId: Int) {
+        val delete = DeleteMessage(chatId, messageId)
         try {
             telegramClient.execute(delete)
         } catch (e: TelegramApiException) {

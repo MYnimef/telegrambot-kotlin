@@ -37,7 +37,7 @@ internal class BotConsumer(
     private fun onMessageReceived(message: Message) {
         val userMessage = UserUpdate.Message(
             text = message.text,
-            userId = message.chatId.toString(),
+            chatId = message.chatId.toString(),
             messageId = message.messageId,
             username = message.chat.userName,
             firstName = message.chat.firstName,
@@ -55,7 +55,7 @@ internal class BotConsumer(
                 lastName = contact.lastName,
                 userId = contact.userId?.toString()
             ),
-            userId = message.chatId.toString(),
+            chatId = message.chatId.toString(),
             username = message.chat.userName,
             firstName = message.chat.firstName,
             lastName = message.chat.lastName
@@ -68,7 +68,7 @@ internal class BotConsumer(
         callback?.invoke(
             UserUpdate.Callback(
                 callbackId = query.data,
-                userId = query.message.chatId.toString(),
+                chatId = query.message.chatId.toString(),
                 originalMessageId = query.message.messageId,
                 username = query.message.chat.userName,
                 firstName = query.message.chat.firstName,

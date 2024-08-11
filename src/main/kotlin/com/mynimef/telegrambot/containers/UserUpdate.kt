@@ -2,7 +2,7 @@ package com.mynimef.telegrambot.containers
 
 sealed interface UserUpdate {
 
-    val userId: String
+    val chatId: String
     val username: String?
     val firstName: String
     val lastName: String?
@@ -10,7 +10,7 @@ sealed interface UserUpdate {
     data class Message(
         val text: String,
         val messageId: Int,
-        override val userId: String,
+        override val chatId: String,
         override val username: String?,
         override val firstName: String,
         override val lastName: String?
@@ -19,7 +19,7 @@ sealed interface UserUpdate {
     data class Callback(
         val callbackId: String,
         val originalMessageId: Int,
-        override val userId: String,
+        override val chatId: String,
         override val username: String?,
         override val firstName: String,
         override val lastName: String?
@@ -27,7 +27,7 @@ sealed interface UserUpdate {
 
     data class Contact(
         val contactInfo: ContactInfo,
-        override val userId: String,
+        override val chatId: String,
         override val username: String?,
         override val firstName: String,
         override val lastName: String?
