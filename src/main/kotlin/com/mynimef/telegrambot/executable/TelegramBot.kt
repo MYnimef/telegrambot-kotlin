@@ -1,14 +1,18 @@
 package com.mynimef.telegrambot.executable
 
 import com.mynimef.telegrambot.IBot
-import com.mynimef.telegrambot.containers.*
+import com.mynimef.telegrambot.containers.BotMessage
+import com.mynimef.telegrambot.containers.ButtonInline
+import com.mynimef.telegrambot.containers.ButtonKeyboard
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
 import org.telegram.telegrambots.meta.api.objects.InputFile
+import org.telegram.telegrambots.meta.api.objects.media.InputMediaDocument
 import org.telegram.telegrambots.meta.api.objects.message.Message
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup
@@ -45,52 +49,78 @@ internal class TelegramBot(token: String): IBot {
         return null
     }
 
-    override fun sendMessage(chatId: String, message: BotMessage): Int? {
-        val sendMessage = SendMessage(chatId, message.text)
-        if (message.inlineButtonLines.isNotEmpty()) {
-            sendMessage.replyMarkup = setButtons(message.inlineButtonLines)
+    private fun sendEditMedia(editMessageMedia: EditMessageMedia) {
+        try {
+            telegramClient.execute(editMessageMedia)
+        } catch (e: TelegramApiException) {
+            e.printStackTrace()
         }
-        if (message.keyboardButtonLines.isNotEmpty()) {
-            sendMessage.replyMarkup = setButtons(message.keyboardButtonLines)
-        }
-        return sendMessage(sendMessage)
     }
 
-    override fun sendMessage(chatId: String, botFile: BotFile) {
-        val doc = SendDocument(chatId, InputFile(botFile.file))
-        doc.caption = botFile.description
-        sendDoc(doc)
+    override fun sendMessage(userId: String, message: BotMessage): Int? {
+        when (message) {
+            is BotMessage.File -> {
+                val doc = SendDocument(userId, InputFile(message.file))
+                doc.caption = message.description
+                if (message.inlineButtonLines.isNotEmpty()) {
+                    doc.replyMarkup = setButtons(message.inlineButtonLines)
+                } else if (message.keyboardButtonLines.isNotEmpty()) {
+                    doc.replyMarkup = setButtons(message.keyboardButtonLines)
+                }
+                return sendDoc(doc)
+            }
+            is BotMessage.Text -> {
+                val sendMessage = SendMessage(userId, message.text)
+                if (message.inlineButtonLines.isNotEmpty()) {
+                    sendMessage.replyMarkup = setButtons(message.inlineButtonLines)
+                } else if (message.keyboardButtonLines.isNotEmpty()) {
+                    sendMessage.replyMarkup = setButtons(message.keyboardButtonLines)
+                }
+                return sendMessage(sendMessage)
+            }
+        }
     }
 
-    override fun sendMessage(chatId: String, text: String): Int? {
+    override fun sendMessage(userId: String, text: String): Int? {
         val message = SendMessage(
-            chatId,
+            userId,
             text
         )
         return sendMessage(message)
     }
 
-    override fun editMessage(chatId: String, messageId: Int, text: String) {
+    override fun editMessage(userId: String, messageId: Int, text: String) {
         val editMessage = EditMessageText(text)
-        editMessage.chatId = chatId
+        editMessage.chatId = userId
         editMessage.messageId = messageId
         sendMessage(editMessage)
     }
 
-    override fun editMessage(chatId: String, messageId: Int, message: BotMessage) {
-        val editMessage = EditMessageText(message.text)
-
-        editMessage.chatId = chatId
-        editMessage.messageId = messageId
-
-        if (message.inlineButtonLines.isNotEmpty()) {
-            editMessage.replyMarkup = setButtons(message.inlineButtonLines)
+    override fun editMessage(userId: String, messageId: Int, message: BotMessage) {
+        when (message) {
+            is BotMessage.File -> {
+                val editMessage = EditMessageMedia(InputMediaDocument(message.file, ""))
+                editMessage.chatId = userId
+                editMessage.messageId = messageId
+                if (message.inlineButtonLines.isNotEmpty()) {
+                    editMessage.replyMarkup = setButtons(message.inlineButtonLines)
+                }
+                sendEditMedia(editMessage)
+            }
+            is BotMessage.Text -> {
+                val editMessage = EditMessageText(message.text)
+                editMessage.chatId = userId
+                editMessage.messageId = messageId
+                if (message.inlineButtonLines.isNotEmpty()) {
+                    editMessage.replyMarkup = setButtons(message.inlineButtonLines)
+                }
+                sendMessage(editMessage)
+            }
         }
-        sendMessage(editMessage)
     }
 
-    override fun deleteMessage(chatId: String, messageId: Int) {
-        val delete = DeleteMessage(chatId, messageId)
+    override fun deleteMessage(userId: String, messageId: Int) {
+        val delete = DeleteMessage(userId, messageId)
         try {
             telegramClient.execute(delete)
         } catch (e: TelegramApiException) {

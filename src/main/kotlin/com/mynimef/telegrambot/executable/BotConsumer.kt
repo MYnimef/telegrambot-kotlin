@@ -13,7 +13,6 @@ import org.telegram.telegrambots.meta.api.objects.message.Message
 typealias ActionMessage = (userMessage: UserMessage, bot: IBot) -> Unit
 typealias ActionContact = (userContact: UserContact, bot: IBot) -> Unit
 typealias ActionCallback = (userCallback: UserCallback, bot: IBot) -> Unit
-typealias SaveLog = (userMessage: UserMessage) -> Unit
 
 
 internal class BotConsumer(
@@ -22,7 +21,6 @@ internal class BotConsumer(
     private val noCommandRecognizedAction: ActionMessage,
     private val contactAction: ActionContact,
     private val callbacksActions: Map<String, ActionCallback>,
-    private val saveLog: SaveLog? = null
 ): LongPollingSingleThreadUpdateConsumer {
 
     override fun consume(update: Update) {
@@ -47,8 +45,6 @@ internal class BotConsumer(
             firstName = message.chat.firstName,
             lastName = message.chat.lastName
         )
-
-        saveLog?.invoke(userMessage)
         commandsActions[message.text]?.invoke(userMessage, telegramBot) ?: noCommandRecognizedAction(userMessage, telegramBot)
     }
 
