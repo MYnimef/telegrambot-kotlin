@@ -56,24 +56,24 @@ internal class TelegramBot(token: String): IBot {
         }
     }
 
-    override fun sendMessage(chatId: String, message: BotSendable): Int? {
+    override fun sendMessage(chatId: String, message: BotMessage): Int? {
         when (message) {
             is BotMessage.File -> {
                 val doc = SendDocument(chatId, InputFile(message.file))
                 doc.caption = message.description
                 message.addOn?.let { when (it) {
-                    is Configurable.AddOn.ButtonInlineContainer -> doc.replyMarkup = setButtons(it.inlineButtonLines)
-                    is Configurable.AddOn.ButtonKeyboardContainer -> doc.replyMarkup = setButtons(it.keyboardButtonLines)
-                    is Configurable.AddOn.ButtonKeyboardRemover -> doc.replyMarkup = ReplyKeyboardRemove(true)
+                    is BotMessage.Configurable.AddOn.ButtonInlineContainer -> doc.replyMarkup = setButtons(it.inlineButtonLines)
+                    is BotMessage.Configurable.AddOn.ButtonKeyboardContainer -> doc.replyMarkup = setButtons(it.keyboardButtonLines)
+                    is BotMessage.Configurable.AddOn.ButtonKeyboardRemover -> doc.replyMarkup = ReplyKeyboardRemove(true)
                 }}
                 return sendDoc(doc)
             }
             is BotMessage.Text -> {
                 val sendMessage = SendMessage(chatId, message.text)
                 message.addOn?.let { when (it) {
-                    is Configurable.AddOn.ButtonInlineContainer -> sendMessage.replyMarkup = setButtons(it.inlineButtonLines)
-                    is Configurable.AddOn.ButtonKeyboardContainer -> sendMessage.replyMarkup = setButtons(it.keyboardButtonLines)
-                    is Configurable.AddOn.ButtonKeyboardRemover -> sendMessage.replyMarkup = ReplyKeyboardRemove(true)
+                    is BotMessage.Configurable.AddOn.ButtonInlineContainer -> sendMessage.replyMarkup = setButtons(it.inlineButtonLines)
+                    is BotMessage.Configurable.AddOn.ButtonKeyboardContainer -> sendMessage.replyMarkup = setButtons(it.keyboardButtonLines)
+                    is BotMessage.Configurable.AddOn.ButtonKeyboardRemover -> sendMessage.replyMarkup = ReplyKeyboardRemove(true)
                 }}
                 return sendMessage(sendMessage)
             }
@@ -95,14 +95,14 @@ internal class TelegramBot(token: String): IBot {
         sendMessage(editMessage)
     }
 
-    override fun editMessage(chatId: String, messageId: Int, message: BotSendable) {
+    override fun editMessage(chatId: String, messageId: Int, message: BotMessage) {
         when (message) {
             is BotMessage.File -> {
                 val editMessage = EditMessageMedia(InputMediaDocument(message.file, ""))
                 editMessage.chatId = chatId
                 editMessage.messageId = messageId
                 message.addOn?.let { when (it) {
-                    is Configurable.AddOn.ButtonInlineContainer -> editMessage.replyMarkup = setButtons(it.inlineButtonLines)
+                    is BotMessage.Configurable.AddOn.ButtonInlineContainer -> editMessage.replyMarkup = setButtons(it.inlineButtonLines)
                     else -> {}
                 }}
                 sendEditMedia(editMessage)
@@ -112,7 +112,7 @@ internal class TelegramBot(token: String): IBot {
                 editMessage.chatId = chatId
                 editMessage.messageId = messageId
                 message.addOn?.let { when (it) {
-                    is Configurable.AddOn.ButtonInlineContainer -> editMessage.replyMarkup = setButtons(it.inlineButtonLines)
+                    is BotMessage.Configurable.AddOn.ButtonInlineContainer -> editMessage.replyMarkup = setButtons(it.inlineButtonLines)
                     else -> {}
                 }}
                 sendMessage(editMessage)
