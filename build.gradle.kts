@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.github.MYnimef"
-version = "0.0.11"
+version = "0.0.12"
 
 repositories {
     mavenCentral()

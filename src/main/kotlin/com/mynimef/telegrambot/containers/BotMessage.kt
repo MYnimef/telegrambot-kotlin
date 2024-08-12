@@ -1,16 +1,20 @@
 package com.mynimef.telegrambot.containers
 
 
+/**
+ * Creates simple text message
+ */
 fun botMessage(
     text: String
 ) = BotMessage.Text(text)
 
-
+/**
+ * Creates message with attached file
+ */
 fun botMessage(
     file: java.io.File,
     description: String? = null,
 ) = BotMessage.File(file, description)
-
 
 /**
  * BotMessage to send to user
@@ -76,7 +80,7 @@ sealed interface BotMessage {
 
         fun addKeyboardButtonRemover(): BotMessage {
             addOn = AddOn.ButtonKeyboardRemover
-            return this as BotMessage
+            return this
         }
 
         internal sealed interface AddOn {
