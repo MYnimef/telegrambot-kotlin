@@ -5,8 +5,14 @@ package com.mynimef.telegrambot.containers
  * Creates simple text message
  */
 fun botMessage(
-    text: String
-) = BotMessage.Text(text = text)
+    text: String,
+    disableNotification: Boolean = false,
+    replyToMessageId: Int? = null
+) = BotMessage.Text(
+    text = text,
+    disableNotification = disableNotification,
+    replyToMessageId = replyToMessageId
+)
 
 /**
  * Creates message with attached file
@@ -14,7 +20,14 @@ fun botMessage(
 fun botMessage(
     file: java.io.File,
     description: String? = null,
-) = BotMessage.File(file = file, description = description)
+    disableNotification: Boolean = false,
+    replyToMessageId: Int? = null
+) = BotMessage.File(
+    file = file,
+    description = description,
+    disableNotification = disableNotification,
+    replyToMessageId = replyToMessageId
+)
 
 /**
  * Creates message with location
@@ -22,7 +35,14 @@ fun botMessage(
 fun botMessage(
     latitude: Double,
     longitude: Double,
-) = BotMessage.Location(latitude = latitude, longitude = longitude)
+    disableNotification: Boolean = false,
+    replyToMessageId: Int? = null
+) = BotMessage.Location(
+    latitude = latitude,
+    longitude = longitude,
+    disableNotification = disableNotification,
+    replyToMessageId = replyToMessageId
+)
 
 /**
  * BotMessage to send to user
@@ -30,10 +50,20 @@ fun botMessage(
 sealed interface BotMessage {
 
     /**
+     * Optional. Sends the message silently.
+     * Users will receive a notification with no sound.
+     */
+    val disableNotification: Boolean
+
+    val replyToMessageId: Int?
+
+    /**
      * Simple text message
      */
     class Text @Throws(IllegalArgumentException::class) constructor(
         val text: String,
+        override val disableNotification: Boolean = false,
+        override val replyToMessageId: Int? = null
     ): BotMessage, Configurable() {
         init {
             if (text.isBlank()) {
@@ -48,6 +78,8 @@ sealed interface BotMessage {
     class File(
         val file: java.io.File,
         val description: String? = null,
+        override val disableNotification: Boolean = false,
+        override val replyToMessageId: Int? = null
     ): BotMessage, Configurable()
 
     /**
@@ -55,7 +87,9 @@ sealed interface BotMessage {
      */
     class Location(
         val latitude: Double,
-        val longitude: Double
+        val longitude: Double,
+        override val disableNotification: Boolean = false,
+        override val replyToMessageId: Int? = null
     ): BotMessage, Configurable()
 
     sealed class Configurable: ButtonInline.Container, ButtonKeyboard.Container {
