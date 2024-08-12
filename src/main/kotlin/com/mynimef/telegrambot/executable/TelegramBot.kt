@@ -5,6 +5,7 @@ import com.mynimef.telegrambot.containers.*
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument
+import org.telegram.telegrambots.meta.api.methods.send.SendLocation
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia
@@ -77,6 +78,15 @@ internal class TelegramBot(token: String): IBot {
                 }}
                 return sendMessage(sendMessage)
             }
+            is BotMessage.Location -> {
+                val sendMessage = SendLocation(chatId, message.latitude, message.longitude)
+                message.addOn?.let { when (it) {
+                    is BotMessage.Configurable.AddOn.ButtonInlineContainer -> sendMessage.replyMarkup = setButtons(it.inlineButtonLines)
+                    is BotMessage.Configurable.AddOn.ButtonKeyboardContainer -> sendMessage.replyMarkup = setButtons(it.keyboardButtonLines)
+                    is BotMessage.Configurable.AddOn.ButtonKeyboardRemover -> sendMessage.replyMarkup = ReplyKeyboardRemove(true)
+                }}
+                return sendMessage(sendMessage)
+            }
         }
     }
 
@@ -116,6 +126,9 @@ internal class TelegramBot(token: String): IBot {
                     else -> {}
                 }}
                 sendMessage(editMessage)
+            }
+            is BotMessage.Location -> {
+                TODO()
             }
         }
     }

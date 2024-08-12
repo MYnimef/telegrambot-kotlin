@@ -6,7 +6,7 @@ package com.mynimef.telegrambot.containers
  */
 fun botMessage(
     text: String
-) = BotMessage.Text(text)
+) = BotMessage.Text(text = text)
 
 /**
  * Creates message with attached file
@@ -14,7 +14,15 @@ fun botMessage(
 fun botMessage(
     file: java.io.File,
     description: String? = null,
-) = BotMessage.File(file, description)
+) = BotMessage.File(file = file, description = description)
+
+/**
+ * Creates message with location
+ */
+fun botMessage(
+    latitude: Double,
+    longitude: Double,
+) = BotMessage.Location(latitude = latitude, longitude = longitude)
 
 /**
  * BotMessage to send to user
@@ -40,6 +48,14 @@ sealed interface BotMessage {
     class File(
         val file: java.io.File,
         val description: String? = null,
+    ): BotMessage, Configurable()
+
+    /**
+     * Message with file
+     */
+    class Location(
+        val latitude: Double,
+        val longitude: Double
     ): BotMessage, Configurable()
 
     sealed class Configurable: ButtonInline.Container, ButtonKeyboard.Container {
