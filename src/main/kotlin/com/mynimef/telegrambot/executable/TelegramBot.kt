@@ -67,6 +67,8 @@ internal class TelegramBot(token: String): IBot {
                     is BotMessage.Configurable.AddOn.ButtonKeyboardContainer -> doc.replyMarkup = setButtons(it.keyboardButtonLines)
                     is BotMessage.Configurable.AddOn.ButtonKeyboardRemover -> doc.replyMarkup = ReplyKeyboardRemove(true)
                 }}
+                doc.replyToMessageId = message.replyToMessageId
+                doc.disableNotification = message.disableNotification
                 return sendDoc(doc)
             }
             is BotMessage.Text -> {
@@ -76,6 +78,8 @@ internal class TelegramBot(token: String): IBot {
                     is BotMessage.Configurable.AddOn.ButtonKeyboardContainer -> sendMessage.replyMarkup = setButtons(it.keyboardButtonLines)
                     is BotMessage.Configurable.AddOn.ButtonKeyboardRemover -> sendMessage.replyMarkup = ReplyKeyboardRemove(true)
                 }}
+                sendMessage.replyToMessageId = message.replyToMessageId
+                sendMessage.disableNotification = message.disableNotification
                 return sendMessage(sendMessage)
             }
             is BotMessage.Location -> {
@@ -85,6 +89,8 @@ internal class TelegramBot(token: String): IBot {
                     is BotMessage.Configurable.AddOn.ButtonKeyboardContainer -> sendMessage.replyMarkup = setButtons(it.keyboardButtonLines)
                     is BotMessage.Configurable.AddOn.ButtonKeyboardRemover -> sendMessage.replyMarkup = ReplyKeyboardRemove(true)
                 }}
+                sendMessage.replyToMessageId = message.replyToMessageId
+                sendMessage.disableNotification = message.disableNotification
                 return sendMessage(sendMessage)
             }
         }
