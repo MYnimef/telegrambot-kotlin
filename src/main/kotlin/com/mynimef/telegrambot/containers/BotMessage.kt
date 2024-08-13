@@ -2,7 +2,20 @@ package com.mynimef.telegrambot.containers
 
 
 /**
- * Creates simple text message
+ * Creates an instance of a text message for the Telegram Bot API.
+ *
+ * This function generates a `BotMessage.Text` object with the specified parameters,
+ * which can be used to send a text message through the Telegram Bot API.
+ *
+ * @param text The text content of the message to be sent. This is a mandatory field.
+ * @param disableNotification Optional. If set to `true`, the message will be sent silently.
+ *                              Users will not receive a notification for this message.
+ *                              Defaults to `false`.
+ * @param replyToMessageId Optional. If specified, the message will be sent as a reply
+ *                          to the message with the given ID. Defaults to `null`, which means
+ *                          no reply is set.
+ *
+ * @return A `BotMessage.Text` instance containing the specified parameters.
  */
 fun botMessage(
     text: String,
@@ -15,7 +28,24 @@ fun botMessage(
 )
 
 /**
- * Creates message with attached file
+ * Creates an instance of a file message for the Telegram Bot API.
+ *
+ * This function generates a `BotMessage.File` object with the specified parameters,
+ * which can be used to send a file through the Telegram Bot API.
+ *
+ * @param file The file to be sent. This is a mandatory field and must be an instance of
+ *             `java.io.File`.
+ * @param description Optional. A description or caption for the file. This text will be
+ *                     sent along with the file and can provide context or additional information.
+ *                     Defaults to `null` if no description is provided.
+ * @param disableNotification Optional. If set to `true`, the message will be sent silently.
+ *                              Users will not receive a notification for this message.
+ *                              Defaults to `false`.
+ * @param replyToMessageId Optional. If specified, the message will be sent as a reply
+ *                          to the message with the given ID. Defaults to `null`, which means
+ *                          no reply is set.
+ *
+ * @return A `BotMessage.File` instance containing the specified parameters.
  */
 fun botMessage(
     file: java.io.File,
@@ -30,7 +60,23 @@ fun botMessage(
 )
 
 /**
- * Creates message with location
+ * Creates an instance of a location message for the Telegram Bot API.
+ *
+ * This function generates a `BotMessage.Location` object with the specified parameters,
+ * which can be used to send a location through the Telegram Bot API.
+ *
+ * @param latitude The latitude of the location to be sent. This is a mandatory field and
+ *                 must be a valid geographic coordinate.
+ * @param longitude The longitude of the location to be sent. This is a mandatory field and
+ *                  must be a valid geographic coordinate.
+ * @param disableNotification Optional. If set to `true`, the message will be sent silently.
+ *                              Users will not receive a notification for this message.
+ *                              Defaults to `false`.
+ * @param replyToMessageId Optional. If specified, the message will be sent as a reply
+ *                          to the message with the given ID. Defaults to `null`, which means
+ *                          no reply is set.
+ *
+ * @return A `BotMessage.Location` instance containing the specified parameters.
  */
 fun botMessage(
     latitude: Double,
