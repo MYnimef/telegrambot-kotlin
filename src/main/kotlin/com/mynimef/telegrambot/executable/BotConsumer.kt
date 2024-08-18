@@ -12,6 +12,7 @@ typealias ActionMessage = (userMessage: UserUpdate.Message, bot: IBot) -> Unit
 typealias ActionContact = (userContact: UserUpdate.Contact, bot: IBot) -> Unit
 typealias ActionCallback = (userCallback: UserUpdate.Callback, bot: IBot) -> Unit
 
+
 internal class BotConsumer(
     private val telegramBot: TelegramBot,
     private val commandsActions: Map<String, ActionMessage>,
