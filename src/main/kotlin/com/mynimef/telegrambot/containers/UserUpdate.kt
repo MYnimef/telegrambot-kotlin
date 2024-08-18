@@ -1,5 +1,8 @@
 package com.mynimef.telegrambot.containers
 
+/**
+ * User update that comes from user to the bot
+ */
 sealed interface UserUpdate {
 
     val chatId: String
