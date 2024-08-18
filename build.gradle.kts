@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.github.MYnimef"
-version = "0.0.12"
+version = "0.0.13"
 
 repositories {
     mavenCentral()
@@ -23,8 +23,8 @@ tasks.withType<JavaCompile> {
 }
 
 dependencies {
-    implementation("org.telegram:telegrambots-longpolling:7.7.2")
-    implementation("org.telegram:telegrambots-client:7.7.2")
+    implementation("org.telegram:telegrambots-longpolling:7.8.0")
+    implementation("org.telegram:telegrambots-client:7.8.0")
 
     testImplementation(kotlin("test"))
 }
