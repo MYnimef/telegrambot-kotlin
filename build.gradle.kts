@@ -23,8 +23,8 @@ tasks.withType<JavaCompile> {
 }
 
 dependencies {
-    implementation("org.telegram:telegrambots-longpolling:7.8.0")
-    implementation("org.telegram:telegrambots-client:7.8.0")
+    implementation("org.telegram:telegrambots-longpolling:7.9.0")
+    implementation("org.telegram:telegrambots-client:7.9.0")
 
     testImplementation(kotlin("test"))
 }
