@@ -2,6 +2,10 @@ package com.mynimef.telegrambot
 
 import com.mynimef.telegrambot.containers.BotMessage
 
+
+/**
+ * Base interface for sending messages
+ */
 interface IBot {
 
     fun sendMessage(chatId: String, text: String): Int?

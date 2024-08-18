@@ -7,7 +7,7 @@ import okhttp3.internal.toImmutableMap
 
 
 /**
- * Abstract base class for handling various types of updates in a bot, including messages, commands,
+ * Base class for handling various types of updates in a bot, including messages, commands,
  * and callbacks.
  *
  * This class provides a framework for managing actions associated with different types of updates
