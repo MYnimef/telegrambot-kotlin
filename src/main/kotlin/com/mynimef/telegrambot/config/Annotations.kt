@@ -6,7 +6,7 @@ package com.mynimef.telegrambot.config
  */
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class BotCommand(vararg val commands: String)
+annotation class BotCommand(val command: String)
 
 /**
  * Annotation for functions to define the callback from pressing inline buttons

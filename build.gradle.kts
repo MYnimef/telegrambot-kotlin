@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "2.0.10"
+    kotlin("jvm") version "2.0.20"
     `maven-publish`
     `java-library`
 }
@@ -23,8 +23,8 @@ tasks.withType<JavaCompile> {
 }
 
 dependencies {
-    implementation("org.telegram:telegrambots-longpolling:7.9.0")
-    implementation("org.telegram:telegrambots-client:7.9.0")
+    implementation("org.telegram:telegrambots-longpolling:7.10.0")
+    implementation("org.telegram:telegrambots-client:7.10.0")
 
     testImplementation(kotlin("test"))
 }

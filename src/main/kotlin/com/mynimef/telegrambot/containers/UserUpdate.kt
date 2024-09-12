@@ -11,7 +11,7 @@ sealed interface UserUpdate {
     val lastName: String?
 
     /**
-     * Represents a message sent or received by a user in a chat.
+     * Represents a message sent by a user in a chat.
      *
      * This data class encapsulates details of a message, including its content, unique identifier,
      * and information about the user and chat involved.
@@ -27,8 +27,34 @@ sealed interface UserUpdate {
      * @property lastName The last name of the user who sent the message, if available. This field is optional
      *                    and can be `null` if the user does not have a last name.
      */
-    data class Message(
+    data class Message internal constructor(
         val text: String,
+        val messageId: Int,
+        override val chatId: String,
+        override val username: String?,
+        override val firstName: String,
+        override val lastName: String?
+    ): UserUpdate
+
+    /**
+     * Represents a command sent by a user in a chat.
+     *
+     * This data class encapsulates details of a message, including its content, unique identifier,
+     * and information about the user and chat involved.
+     *
+     * @property text The text content of the message. This field is mandatory and cannot be null.
+     * @property messageId The unique identifier of the message within the chat. This field is mandatory
+     *                     and should be unique for each message in the same chat.
+     * @property chatId The unique identifier of the chat where the message was sent. This field is mandatory
+     *                  and is used to associate the message with a specific chat.
+     * @property username The username of the user who sent the message, if available. This field is optional
+     *                    and can be `null` if the user does not have a username.
+     * @property firstName The first name of the user who sent the message. This field is mandatory.
+     * @property lastName The last name of the user who sent the message, if available. This field is optional
+     *                    and can be `null` if the user does not have a last name.
+     */
+    data class Command internal constructor(
+        val command: String,
         val messageId: Int,
         override val chatId: String,
         override val username: String?,
@@ -55,7 +81,7 @@ sealed interface UserUpdate {
      * @property lastName The last name of the user who triggered the callback, if available. This field is
      *                    optional and can be `null` if the user does not have a last name.
      */
-    data class Callback(
+    data class Callback internal constructor(
         val callbackId: String,
         val originalMessageId: Int,
         override val chatId: String,
@@ -81,7 +107,7 @@ sealed interface UserUpdate {
      * @property lastName The last name of the user who shared the contact, if available. This field is
      *                    optional and can be `null` if the user does not have a last name.
      */
-    data class Contact(
+    data class Contact internal constructor(
         val contactInfo: ContactInfo,
         override val chatId: String,
         override val username: String?,
@@ -102,7 +128,7 @@ sealed interface UserUpdate {
          * @property userId Optional. The contact's user identifier in Telegram, if available. This field
          *                  can be `null` if the contact does not have a Telegram user ID.
          */
-        data class ContactInfo(
+        data class ContactInfo internal constructor(
             /**
              * Contact's phone number
              */
