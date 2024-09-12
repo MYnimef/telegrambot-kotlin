@@ -4,7 +4,6 @@ import com.mynimef.telegrambot.IBot
 import com.mynimef.telegrambot.containers.UserUpdate
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery
-import org.telegram.telegrambots.meta.api.objects.Update
 import org.telegram.telegrambots.meta.api.objects.message.Message
 
 
@@ -12,14 +11,14 @@ internal typealias ActionCommand = (UserUpdate.Command, IBot) -> Unit
 internal typealias ActionCallback = (UserUpdate.Callback, IBot) -> Unit
 
 
-abstract class UpdatesHandler: LongPollingSingleThreadUpdateConsumer {
+abstract class UpdatesHandler {
 
     internal lateinit var bot: IBot
 
     internal lateinit var commandsActions: Map<String, ActionCommand>
     internal lateinit var callbacksActions: Map<String, ActionCallback>
 
-    final override fun consume(update: Update) {
+    internal val consumer = LongPollingSingleThreadUpdateConsumer { update ->
         if (update.hasMessage()) {
             val message = update.message
             if (message.hasText()) {

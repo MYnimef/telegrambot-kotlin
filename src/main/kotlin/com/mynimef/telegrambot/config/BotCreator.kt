@@ -33,7 +33,7 @@ class BotCreator(
 
         try {
             TelegramBotsLongPollingApplication().use { botsApplication ->
-                botsApplication.registerBot(token, updatesHandler)
+                botsApplication.registerBot(token, updatesHandler.consumer)
                 Thread.currentThread().join()
                 return bot
             }
