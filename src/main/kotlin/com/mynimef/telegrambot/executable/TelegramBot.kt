@@ -4,6 +4,7 @@ import com.mynimef.telegrambot.IBot
 import com.mynimef.telegrambot.containers.*
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod
+import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMember
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument
 import org.telegram.telegrambots.meta.api.methods.send.SendLocation
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
@@ -11,6 +12,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
 import org.telegram.telegrambots.meta.api.objects.InputFile
+import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMember
 import org.telegram.telegrambots.meta.api.objects.media.InputMediaDocument
 import org.telegram.telegrambots.meta.api.objects.message.Message
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup
@@ -62,6 +64,9 @@ internal class TelegramBot(token: String): IBot {
             is BotMessage.File -> {
                 val doc = SendDocument(chatId, InputFile(message.file))
                 doc.caption = message.description
+                message.parseMode?.let {
+                    doc.parseMode = it.value
+                }
                 message.addOn?.let { when (it) {
                     is BotMessage.Configurable.AddOn.ButtonInlineContainer -> doc.replyMarkup = setButtons(it.inlineButtonLines)
                     is BotMessage.Configurable.AddOn.ButtonKeyboardContainer -> doc.replyMarkup = setButtons(it.keyboardButtonLines)
@@ -73,6 +78,9 @@ internal class TelegramBot(token: String): IBot {
             }
             is BotMessage.Text -> {
                 val sendMessage = SendMessage(chatId, message.text)
+                message.parseMode?.let {
+                    sendMessage.parseMode = it.value
+                }
                 message.addOn?.let { when (it) {
                     is BotMessage.Configurable.AddOn.ButtonInlineContainer -> sendMessage.replyMarkup = setButtons(it.inlineButtonLines)
                     is BotMessage.Configurable.AddOn.ButtonKeyboardContainer -> sendMessage.replyMarkup = setButtons(it.keyboardButtonLines)
@@ -146,6 +154,11 @@ internal class TelegramBot(token: String): IBot {
         } catch (e: TelegramApiException) {
             e.printStackTrace()
         }
+    }
+
+    override fun getChatMember(chatId: String, userId: Long) {
+        val member: ChatMember = telegramClient.execute(GetChatMember(chatId, userId))
+        println(member.status)
     }
 
 }

@@ -18,4 +18,6 @@ interface IBot {
 
     fun deleteMessage(chatId: String, messageId: Int)
 
+    fun getChatMember(chatId: String, userId: Long)
+
 }

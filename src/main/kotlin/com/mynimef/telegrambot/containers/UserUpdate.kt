@@ -6,9 +6,7 @@ package com.mynimef.telegrambot.containers
 sealed interface UserUpdate {
 
     val chatId: String
-    val username: String?
-    val firstName: String
-    val lastName: String?
+    val user: User
 
     /**
      * Represents a message sent by a user in a chat.
@@ -31,9 +29,7 @@ sealed interface UserUpdate {
         val text: String,
         val messageId: Int,
         override val chatId: String,
-        override val username: String?,
-        override val firstName: String,
-        override val lastName: String?
+        override val user: User,
     ): UserUpdate
 
     /**
@@ -57,9 +53,7 @@ sealed interface UserUpdate {
         val command: String,
         val messageId: Int,
         override val chatId: String,
-        override val username: String?,
-        override val firstName: String,
-        override val lastName: String?
+        override val user: User
     ): UserUpdate
 
     /**
@@ -85,9 +79,7 @@ sealed interface UserUpdate {
         val callbackId: String,
         val originalMessageId: Int,
         override val chatId: String,
-        override val username: String?,
-        override val firstName: String,
-        override val lastName: String?
+        override val user: User,
     ): UserUpdate
 
 
@@ -110,9 +102,7 @@ sealed interface UserUpdate {
     data class Contact internal constructor(
         val contactInfo: ContactInfo,
         override val chatId: String,
-        override val username: String?,
-        override val firstName: String,
-        override val lastName: String?
+        override val user: User,
     ): UserUpdate {
 
         /**

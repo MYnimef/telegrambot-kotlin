@@ -1,6 +1,7 @@
 package com.mynimef.telegrambot.executable
 
 import com.mynimef.telegrambot.IBot
+import com.mynimef.telegrambot.containers.User
 import com.mynimef.telegrambot.containers.UserUpdate
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery
@@ -33,13 +34,17 @@ abstract class UpdatesHandler {
 
     private fun onMessageReceived(message: Message) {
         if (message.isCommand) {
+            message.chat
             val userCommand = UserUpdate.Command(
                 command = message.text,
                 chatId = message.chatId.toString(),
                 messageId = message.messageId,
-                username = message.chat.userName,
-                firstName = message.chat.firstName,
-                lastName = message.chat.lastName
+                user = User(
+                    userId = message.chatId.toString(),
+                    username = message.chat.userName,
+                    firstName = message.chat.firstName,
+                    lastName = message.chat.lastName
+                )
             )
             onUpdate(userUpdate = userCommand, bot = bot)
         } else {
@@ -47,9 +52,12 @@ abstract class UpdatesHandler {
                 text = message.text,
                 chatId = message.chatId.toString(),
                 messageId = message.messageId,
-                username = message.chat.userName,
-                firstName = message.chat.firstName,
-                lastName = message.chat.lastName
+                user = User(
+                    userId = message.chatId.toString(),
+                    username = message.chat.userName,
+                    firstName = message.chat.firstName,
+                    lastName = message.chat.lastName
+                )
             )
             onUpdate(userUpdate = userMessage, bot = bot)
         }
@@ -65,9 +73,12 @@ abstract class UpdatesHandler {
                 userId = contact.userId?.toString()
             ),
             chatId = message.chatId.toString(),
-            username = message.chat.userName,
-            firstName = message.chat.firstName,
-            lastName = message.chat.lastName
+            user = User(
+                userId = message.chatId.toString(),
+                username = message.chat.userName,
+                firstName = message.chat.firstName,
+                lastName = message.chat.lastName
+            )
         )
         onUpdate(userUpdate = contactUpdate, bot = bot)
     }
@@ -78,9 +89,12 @@ abstract class UpdatesHandler {
                 callbackId = query.data,
                 chatId = query.message.chatId.toString(),
                 originalMessageId = query.message.messageId,
-                username = query.message.chat.userName,
-                firstName = query.message.chat.firstName,
-                lastName = query.message.chat.lastName
+                user = User(
+                    userId = query.message.chatId.toString(),
+                    username = query.message.chat.userName,
+                    firstName = query.message.chat.firstName,
+                    lastName = query.message.chat.lastName
+                )
             )
             onUpdate(userUpdate = callbackUpdate, bot = bot)
         }

@@ -19,10 +19,12 @@ package com.mynimef.telegrambot.containers
  */
 fun botMessage(
     text: String,
+    parseMode: BotMessage.EParseMode? = null,
     disableNotification: Boolean = false,
     replyToMessageId: Int? = null
 ) = BotMessage.Text(
     text = text,
+    parseMode = parseMode,
     disableNotification = disableNotification,
     replyToMessageId = replyToMessageId
 )
@@ -50,11 +52,13 @@ fun botMessage(
 fun botMessage(
     file: java.io.File,
     description: String? = null,
+    parseMode: BotMessage.EParseMode? = null,
     disableNotification: Boolean = false,
     replyToMessageId: Int? = null
 ) = BotMessage.File(
     file = file,
     description = description,
+    parseMode = parseMode,
     disableNotification = disableNotification,
     replyToMessageId = replyToMessageId
 )
@@ -108,6 +112,7 @@ sealed interface BotMessage {
      */
     class Text @Throws(IllegalArgumentException::class) constructor(
         val text: String,
+        val parseMode: EParseMode? = null,
         override val disableNotification: Boolean = false,
         override val replyToMessageId: Int? = null
     ): BotMessage, Configurable() {
@@ -124,6 +129,7 @@ sealed interface BotMessage {
     class File(
         val file: java.io.File,
         val description: String? = null,
+        val parseMode: EParseMode? = null,
         override val disableNotification: Boolean = false,
         override val replyToMessageId: Int? = null
     ): BotMessage, Configurable()
@@ -192,6 +198,16 @@ sealed interface BotMessage {
             object ButtonKeyboardRemover: AddOn
 
         }
+
+    }
+
+    enum class EParseMode(internal val value: String) {
+
+        HTML("html"),
+
+        MARKDOWN("Markdown"),
+
+        MARKDOWN_V2("MarkdownV2")
 
     }
 
