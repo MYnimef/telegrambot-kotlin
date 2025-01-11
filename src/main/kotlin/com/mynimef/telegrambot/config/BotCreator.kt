@@ -10,19 +10,23 @@ import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication
 import java.lang.reflect.Method
 
 
-class BotCreator(
-    private val token: String
-) {
+class BotCreator {
+
+    private val application = TelegramBotsLongPollingApplication()
 
     fun create(
+        token: String,
         updatesHandler: (userUpdate: UserUpdate, bot: IBot) -> Unit
-    ) = create(object: UpdatesHandler() {
-        override fun onUpdate(userUpdate: UserUpdate, bot: IBot) {
-            updatesHandler(userUpdate, bot)
+    ) = create(
+        token = token,
+        updatesHandler = object: UpdatesHandler() {
+            override fun onUpdate(userUpdate: UserUpdate, bot: IBot) {
+                updatesHandler(userUpdate, bot)
+            }
         }
-    })
+    )
 
-    fun create(updatesHandler: UpdatesHandler): IBot? {
+    fun create(token: String, updatesHandler: UpdatesHandler): IBot? {
         val bot = TelegramBot(token)
 
         updatesHandler.bot = bot
@@ -30,17 +34,21 @@ class BotCreator(
             updatesHandler.commandsActions = commands
             updatesHandler.callbacksActions = callbacks
         }
-
         try {
-            TelegramBotsLongPollingApplication().use { botsApplication ->
-                botsApplication.registerBot(token, updatesHandler.consumer)
-                Thread.currentThread().join()
-                return bot
-            }
+            application.registerBot(token, updatesHandler.consumer)
+            return bot
         } catch (e: Exception) {
             e.printStackTrace()
         }
         return null
+    }
+
+    fun stop(token: String) {
+        application.unregisterBot(token)
+    }
+
+    fun stopAll() {
+        application.stop()
     }
 
 }
